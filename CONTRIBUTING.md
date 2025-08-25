@@ -4,8 +4,8 @@ Thank you for your interest in contributing to Virtual Notepad! This document pr
 
 ## Team Members
 
-- **Primary Developer**: [Your Name]
-- **Collaborator**: [Teammate Name]
+- **Primary Developer**: Rhythm
+- **Collaborator**: Chaitnya Dhar dwivedi 
 
 ## Development Setup
 
