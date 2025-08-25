@@ -77,8 +77,8 @@
 
 ## Team
 
-- **[Your Name]** - Lead Developer
-- **[Teammate Name]** - Co-Developer
+- **Rhythm** - Lead Developer
+- **Chaitnya Dhar Dwivedi** - Co-Developer
 
 *Collaborative project built with passion for computer vision and interactive applications.*
 
