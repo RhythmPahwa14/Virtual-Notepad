@@ -1,8 +1,8 @@
-# 🤲 Virtual Notepad - AI Gesture Recognition
+# Virtual Notepad - AI Gesture Recognition
 
 **Real-time hand gesture recognition with TensorFlow.js and MediaPipe - Deploy to Vercel in minutes!**
 
-## 🌟 New Features
+## New Features
 
 - **CNN Model Training**: Train custom gesture recognition models in Python
 - **TensorFlow.js Conversion**: Export models for web deployment  
@@ -11,7 +11,7 @@
 - **6 Gesture Classes**: Fist, Open Palm, Peace, Point Up, Rock, Thumbs Up
 - **Demo Mode**: Works even without trained models
 
-## 🚀 Quick Deploy
+## Quick Deploy
 
 - **Hand Tracking**: Draw using your index finger
 - **ML Gesture Commands**: Control app with hand gestures (6 different gestures)
