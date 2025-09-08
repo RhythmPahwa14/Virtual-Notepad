@@ -1,8 +1,14 @@
+
 # Virtual Notepad - AI-Powered Hand Gesture Recognition
+
 
 **Real-time hand gesture recognition drawing application with TensorFlow.js and MediaPipe. Professional web-based virtual notepad that lets you draw and control with hand gestures.**
 
+
 ## Features
+=======
+## New Features
+
 
 ### Core Functionality
 - **Real-time Hand Tracking**: Advanced MediaPipe integration for precise hand detection
@@ -15,6 +21,7 @@
 
 ### Advanced Gesture Recognition
 - **6 Gesture Classes**: Fist, Open Palm, Peace, Point Up, Rock, Thumbs Up
+
 - **Gesture Stabilization**: Intelligent gesture filtering to prevent false triggers
 - **Confidence Scoring**: Real-time confidence levels for gesture accuracy
 - **Rule-Based Recognition**: Optimized gesture detection without heavy ML models
@@ -34,6 +41,23 @@
 - **Real-time Processing**: 30+ FPS gesture recognition and drawing
 - **Error Handling**: Robust error management with user-friendly messages
 - **Cross-Platform**: Compatible with Windows, macOS, and Linux
+=======
+- **Demo Mode**: Works even without trained models
+
+## Quick Deploy
+
+- **Hand Tracking**: Draw using your index finger
+- **ML Gesture Commands**: Control app with hand gestures (6 different gestures)
+- **Smart Eraser**: Pinch thumb and index finger to erase
+- **8 Colors**: Red, Blue, Green, Yellow, Purple, Orange, White, Black
+- **3 Brush Styles**: Normal, Dotted, Dashed
+- **Save Drawings**: Export as PNG files with timestamps
+- **Undo System**: Undo up to 10 recent actions
+- **Shape Tools**: Add circles, rectangles, and lines
+- **Drawing Toggle**: Start/stop drawing mode
+- **Data Collection**: Automatically collects gesture data for ML training
+- **Intuitive Controls**: Gesture + keyboard shortcuts for all features
+
 
 ## Quick Start
 
