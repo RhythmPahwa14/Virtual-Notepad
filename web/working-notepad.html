@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Notepad - Gesture Recognition</title>
+    <!-- Import Poppins font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Better text rendering for Poppins */
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            scroll-behavior: smooth;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-weight: 300; /* Poppins Light */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.03) 50%, transparent 70%);
+            animation: sweep 15s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes sweep {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100vw) translateY(100vh) rotate(45deg); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 600; /* Poppins SemiBold */
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: -0.5px;
+            color: white;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            font-weight: 300; /* Poppins Light */
+            opacity: 0.9;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            animation: fadeInScale 0.8s ease-out 0.3s both;
+        }
+        
+        .video-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .video-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .video-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.3);
+        }
+        
+        .video-section:hover::before {
+            left: 100%;
+        }
+        
+        .video-section h3 {
+            font-size: 1.5em;
+            font-weight: 600; /* Poppins SemiBold */
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        video, canvas {
+            width: 100%;
+            max-width: 500px;
+            height: 375px;
+            border-radius: 15px;
+            border: 3px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            background: #000;
+            transition: all 0.3s ease;
+        }
+        
+        video:hover, canvas:hover {
+            border-color: rgba(255,255,255,0.5);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+        }
+        
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: slideInLeft 0.8s ease-out 0.5s both;
+        }
+        
+        .info-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.3);
+        }
+        
+        .info-card:hover::before {
+            transform: translateX(0);
+        }
+        
+        .info-card h3 {
+            font-size: 1.3em;
+            font-weight: 600; /* Poppins SemiBold */
+            margin-bottom: 15px;
+        }
+        
+        .gesture-display {
+            font-size: 2em;
+            font-weight: 600; /* Poppins SemiBold */
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gesture-display::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+        }
+        
+        .gesture-display.active::before {
+            width: 200%;
+            height: 200%;
+        }
+        
+        .confidence-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+        }
+        
+        .confidence-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+            animation: shimmer 2s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .confidence-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+            animation: slide 1.5s linear infinite;
+        }
+        
+        @keyframes slide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .status {
+            padding: 8px 15px;
+            margin: 5px 0;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 400; /* Poppins Regular */
+        }
+        
+        .status.loading {
+            background: rgba(23, 162, 184, 0.8);
+        }
+        
+        .status.ready {
+            background: rgba(40, 167, 69, 0.8);
+        }
+        
+        .status.error {
+            background: rgba(220, 53, 69, 0.8);
+        }
+        
+        .status.warning {
+            background: rgba(255, 193, 7, 0.8);
+            color: #000;
+        }
+        
+        .fps-display {
+            font-family: 'Poppins', 'Courier New', monospace;
+            font-weight: 300; /* Poppins Light */
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            animation: fadeInUp 0.8s ease-out 0.7s both;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600; /* Poppins SemiBold */
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+            z-index: -1;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+            transition: transform 0.1s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #dc3545, #fd7e14);
+            color: white;
+        }
+        
+        .gesture-guide {
+            text-align: left;
+            line-height: 1.8;
+            font-weight: 300; /* Poppins Light */
+        }
+        
+        .gesture-guide div {
+            margin: 8px 0;
+            padding: 5px 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+        
+        .gesture-guide strong {
+            font-weight: 600; /* Poppins SemiBold */
+        }
+        
+        .color-btn {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .color-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .color-btn:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .color-btn:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .color-btn.active {
+            border-width: 3px;
+            transform: scale(1.1);
+            animation: pulse 2s infinite;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(45deg, #ffc107, #fd7e14);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="error-display" style="display:none;background:#dc3545;color:#fff;padding:15px;margin:15px 0;border-radius:8px;font-size:1.1em;animation:fadeInUp 0.5s ease-out;"></div>
+    
+    <!-- Loading overlay -->
+    <div id="loading-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(102, 126, 234, 0.9); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s ease;">
+        <div style="text-align: center;">
+            <div style="width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+            <h2 style="font-family: 'Poppins', sans-serif; font-weight: 600; margin: 0;">Loading Virtual Notepad...</h2>
+            <p style="font-family: 'Poppins', sans-serif; font-weight: 300; margin: 10px 0 0; opacity: 0.8;">Initializing hand tracking...</p>
+        </div>
+    </div>
+    
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <div class="container">
+        <div class="header">
+            <h1>Virtual Notepad</h1>
+            <p>AI-Powered Hand Gesture Recognition</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="video-section">
+                <h3>Camera Feed</h3>
+                <video id="input_video" autoplay muted playsinline style="display: none;"></video>
+                <canvas id="output_canvas"></canvas>
+            </div>
+            
+            <div class="video-section">
+                <h3>Drawing Canvas</h3>
+                <canvas id="drawing_canvas" style="background: white; cursor: crosshair;"></canvas>
+                <div style="margin-top: 10px; text-align: center;">
+                    <div style="margin-bottom: 10px;">
+                        <span style="margin-right: 10px; font-weight: 600;">Colors:</span>
+                        <button class="color-btn" data-color="#2196F3" style="background: #2196F3;"></button>
+                        <button class="color-btn" data-color="#FF0000" style="background: #FF0000;"></button>
+                        <button class="color-btn" data-color="#00FF00" style="background: #00FF00;"></button>
+                        <button class="color-btn" data-color="#FFA500" style="background: #FFA500;"></button>
+                        <button class="color-btn" data-color="#800080" style="background: #800080;"></button>
+                        <button class="color-btn" data-color="#000000" style="background: #000000;"></button>
+                    </div>
+                    <button id="undo_btn" class="btn btn-warning" style="padding: 8px 16px; font-size: 14px; margin: 2px;">
+                        Undo
+                    </button>
+                    <button id="clear_btn" class="btn btn-danger" style="padding: 8px 16px; font-size: 14px; margin: 2px;">
+                        Clear
+                    </button>
+                    <button id="save_btn" class="btn btn-success" style="padding: 8px 16px; font-size: 14px; margin: 2px;">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <div class="info-card">
+                <h3>Detected Gesture</h3>
+                <div id="gesture_display" class="gesture-display">Ready...</div>
+                <div class="confidence-bar">
+                    <div id="confidence_fill" class="confidence-fill"></div>
+                </div>
+                <div id="confidence_text">Confidence: 0%</div>
+            </div>
+            
+            <div class="info-card">
+                <h3>System Status</h3>
+                <div id="model_status" class="status loading">Loading Model...</div>
+                <div id="camera_status" class="status loading">Initializing Camera...</div>
+                <div id="fps_display" class="fps-display">FPS: --</div>
+            </div>
+            
+            <div class="info-card">
+                <h3>Drawing Controls</h3>
+                <div class="gesture-guide">
+                    <div><strong>Point Up</strong> - Draw/Write</div>
+                    <div><strong>Fist</strong> - Stop Drawing</div>
+                    <div><strong>Open Palm</strong> - Erase</div>
+                    <div><strong>Peace</strong> - Navigation</div>
+                    <div><strong>Rock</strong> - Special Action</div>
+                    <div><strong>Thumbs Up</strong> - Confirm</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="start_btn" class="btn btn-primary">
+                Start Recognition
+            </button>
+            <button id="stop_btn" class="btn btn-danger" disabled>
+                Stop Recognition
+            </button>
+        </div>
+    </div>
+
+    <!-- Load external libraries with specific versions for compatibility -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1640029074/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1640029074/drawing_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.js"></script>
+    
+    <script>
+        console.log('Loading Virtual Notepad...');
+        
+        // Global error handler to show errors on the page
+        window.addEventListener('error', function(e) {
+            var errorDiv = document.getElementById('error-display');
+            errorDiv.style.display = 'block';
+            errorDiv.innerHTML = `<strong>JavaScript Error:</strong> ${e.message}<br><small>at ${e.filename}:${e.lineno}</small>`;
+        });
+        window.addEventListener('unhandledrejection', function(e) {
+            var errorDiv = document.getElementById('error-display');
+            errorDiv.style.display = 'block';
+            errorDiv.innerHTML = `<strong>Unhandled Promise Rejection:</strong> ${e.reason}`;
+        });
+        class VirtualNotepadApp {
+            constructor() {
+                this.model = null;
+                this.hands = null;
+                this.camera = null;
+                this.isRunning = false;
+                this.gestureClasses = ['fist', 'open_palm', 'peace', 'rock', 'thumbs_up'];
+                this.frameCount = 0;
+                this.lastTime = performance.now();
+                
+                // Drawing state
+                this.isDrawing = false;
+                this.lastDrawPoint = null;
+                this.drawingEnabled = false;
+                this.indexFingerTip = null;
+                this.currentColor = '#2196F3';
+                this.drawingHistory = [];
+                this.maxHistorySteps = 20;
+                
+                // Gesture stabilization
+                this.gestureHistory = [];
+                this.gestureStabilityFrames = 3;
+                this.lastStableGesture = 'unknown';
+                
+                // Get DOM elements
+                this.inputVideo = document.getElementById('input_video');
+                this.outputCanvas = document.getElementById('output_canvas');
+                this.canvasCtx = this.outputCanvas.getContext('2d');
+                this.drawingCanvas = document.getElementById('drawing_canvas');
+                this.drawingCtx = this.drawingCanvas.getContext('2d');
+                this.gestureDisplay = document.getElementById('gesture_display');
+                this.confidenceFill = document.getElementById('confidence_fill');
+                this.confidenceText = document.getElementById('confidence_text');
+                this.modelStatus = document.getElementById('model_status');
+                this.cameraStatus = document.getElementById('camera_status');
+                this.fpsDisplay = document.getElementById('fps_display');
+                this.startBtn = document.getElementById('start_btn');
+                this.stopBtn = document.getElementById('stop_btn');
+                this.clearBtn = document.getElementById('clear_btn');
+                this.undoBtn = document.getElementById('undo_btn');
+                this.saveBtn = document.getElementById('save_btn');
+                this.colorBtns = document.querySelectorAll('.color-btn');
+                
+                this.initializeEventListeners();
+                this.setupDrawingCanvas();
+                this.loadModel();
+            }
+            
+            initializeEventListeners() {
+                this.startBtn.addEventListener('click', () => this.startRecognition());
+                this.stopBtn.addEventListener('click', () => this.stopRecognition());
+                this.clearBtn.addEventListener('click', () => this.clearDrawing());
+                this.undoBtn.addEventListener('click', () => this.undoLastAction());
+                this.saveBtn.addEventListener('click', () => this.saveDrawing());
+                
+                // Color selection
+                this.colorBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.selectColor(e.target.dataset.color);
+                    });
+                });
+                
+                // Set initial active color
+                this.colorBtns[0].classList.add('active');
+            }
+            
+            setupDrawingCanvas() {
+                // Set canvas size
+                this.drawingCanvas.width = 640;
+                this.drawingCanvas.height = 480;
+                
+                // Set drawing style
+                this.drawingCtx.lineWidth = 3;
+                this.drawingCtx.lineCap = 'round';
+                this.drawingCtx.lineJoin = 'round';
+                this.drawingCtx.strokeStyle = this.currentColor;
+                
+                // Clear to white background
+                this.drawingCtx.fillStyle = 'white';
+                this.drawingCtx.fillRect(0, 0, this.drawingCanvas.width, this.drawingCanvas.height);
+                
+                // Save initial state
+                this.saveCanvasState();
+                
+                console.log('Drawing canvas initialized');
+            }
+            
+            saveCanvasState() {
+                // Save current canvas state to history
+                const imageData = this.drawingCtx.getImageData(0, 0, this.drawingCanvas.width, this.drawingCanvas.height);
+                this.drawingHistory.push(imageData);
+                
+                // Limit history size
+                if (this.drawingHistory.length > this.maxHistorySteps) {
+                    this.drawingHistory.shift();
+                }
+            }
+            
+            selectColor(color) {
+                this.currentColor = color;
+                this.drawingCtx.strokeStyle = color;
+                
+                // Update active button
+                this.colorBtns.forEach(btn => btn.classList.remove('active'));
+                const activeBtn = document.querySelector(`[data-color="${color}"]`);
+                if (activeBtn) activeBtn.classList.add('active');
+                
+                console.log(`Color changed to: ${color}`);
+            }
+            
+            undoLastAction() {
+                if (this.drawingHistory.length > 1) {
+                    // Remove current state
+                    this.drawingHistory.pop();
+                    
+                    // Restore previous state
+                    const previousState = this.drawingHistory[this.drawingHistory.length - 1];
+                    this.drawingCtx.putImageData(previousState, 0, 0);
+                    
+                    console.log('Undo action performed');
+                } else {
+                    console.log('No more actions to undo');
+                }
+            }
+            
+            saveDrawing() {
+                // Create download link
+                const link = document.createElement('a');
+                link.download = `virtual-notepad-${Date.now()}.png`;
+                link.href = this.drawingCanvas.toDataURL();
+                
+                // Trigger download
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                console.log('Drawing saved successfully');
+            }
+            
+            clearDrawing() {
+                this.drawingCtx.fillStyle = 'white';
+                this.drawingCtx.fillRect(0, 0, this.drawingCanvas.width, this.drawingCanvas.height);
+                this.saveCanvasState();
+                console.log('Drawing cleared');
+            }
+            
+            async loadModel() {
+                try {
+                    this.updateStatus('model_status', 'Loading AI Model...', 'loading');
+                    console.log('Loading TensorFlow.js model...');
+                    
+                    // Try to load the model
+                    try {
+                        console.log('Trying to load model from: ./models/model.json');
+                        this.model = await tf.loadLayersModel('./models/model.json');
+                        console.log('Model loaded successfully!');
+                        
+                        // Verify model
+                        const inputShape = this.model.inputs[0].shape;
+                        const outputShape = this.model.outputs[0].shape;
+                        console.log(`Model input shape: [${inputShape}]`);
+                        console.log(`Model output shape: [${outputShape}]`);
+                        
+                        this.updateStatus('model_status', 'AI Model Ready ✅', 'ready');
+                        
+                    } catch (error) {
+                        console.log(`Model not found: ${error.message}`);
+                        console.log('� Using optimized rule-based recognition');
+                        this.updateStatus('model_status', 'Rule-based Recognition ✅', 'ready');
+                    }
+                    
+                    this.startBtn.disabled = false;
+                    
+                } catch (error) {
+                    console.error(`Error loading model: ${error.message}`);
+                    this.updateStatus('model_status', 'Rule-based Recognition ✅', 'ready');
+                    this.startBtn.disabled = false;
+                }
+            }
+            
+            async initializeCamera() {
+                try {
+                    this.updateStatus('camera_status', 'Starting Camera...', 'loading');
+                    
+                    // Check if Camera utility is available
+                    if (typeof Camera === 'undefined') {
+                        throw new Error('Camera utility not loaded');
+                    }
+                    
+                    this.camera = new Camera(this.inputVideo, {
+                        onFrame: async () => {
+                            if (this.hands && this.isRunning) {
+                                try {
+                                    await this.hands.send({image: this.inputVideo});
+                                } catch (error) {
+                                    console.warn('⚠️ Frame processing error:', error.message);
+                                }
+                            }
+                        },
+                        width: 640,
+                        height: 480
+                    });
+                    
+                    await this.camera.start();
+                    this.updateStatus('camera_status', 'Camera Active ✅', 'ready');
+                    console.log('Camera initialized successfully');
+                    
+                } catch (error) {
+                    console.error(`❌ Error initializing camera: ${error.message}`);
+                    this.updateStatus('camera_status', 'Camera Failed - Manual Mode ⚠️', 'warning');
+                    
+                    // Show helpful error message
+                    const errorDiv = document.getElementById('error-display');
+                    if (errorDiv) {
+                        errorDiv.style.display = 'block';
+                        errorDiv.innerHTML = `<strong>Camera Error:</strong> Please allow camera access or use manual gesture buttons. ${error.message}`;
+                    }
+                }
+            }
+            
+            initializeMediaPipe() {
+                try {
+                    console.log('Initializing MediaPipe Hands...');
+                    
+                    this.hands = new Hands({
+                        locateFile: (file) => {
+                            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/${file}`;
+                        }
+                    });
+                    
+                    this.hands.setOptions({
+                        maxNumHands: 1,
+                        modelComplexity: 1,
+                        minDetectionConfidence: 0.7,
+                        minTrackingConfidence: 0.5
+                    });
+                    
+                    this.hands.onResults((results) => this.onResults(results));
+                    
+                    console.log('✅ MediaPipe Hands initialized successfully');
+                    
+                } catch (error) {
+                    console.error('❌ MediaPipe initialization failed:', error.message);
+                    
+                    // Fallback: Use gesture buttons only
+                    this.updateStatus('camera_status', 'Using Manual Controls Only ⚠️', 'warning');
+                    
+                    // Show error to user
+                    const errorDiv = document.getElementById('error-display');
+                    if (errorDiv) {
+                        errorDiv.style.display = 'block';
+                        errorDiv.innerHTML = `<strong>MediaPipe Error:</strong> Using manual gesture buttons only. ${error.message}`;
+                    }
+                }
+            }
+            
+            onResults(results) {
+                this.updateFPS();
+                
+                // Clear and draw camera feed
+                this.canvasCtx.save();
+                this.canvasCtx.clearRect(0, 0, this.outputCanvas.width, this.outputCanvas.height);
+                this.canvasCtx.drawImage(results.image, 0, 0, this.outputCanvas.width, this.outputCanvas.height);
+                
+                if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                    const landmarks = results.multiHandLandmarks[0];
+                    
+                    // Draw hand landmarks
+                    this.drawLandmarks(landmarks);
+                    
+                    // Get gesture and handle drawing
+                    const rawGesture = this.simulateGestureRecognition(landmarks);
+                    const stableGesture = this.stabilizeGesture(rawGesture);
+                    this.handleDrawing(landmarks, stableGesture);
+                    
+                } else {
+                    this.updateGestureDisplay('No hand detected', 0);
+                    this.isDrawing = false;
+                    this.lastDrawPoint = null;
+                }
+                
+                this.canvasCtx.restore();
+            }
+            
+            drawLandmarks(landmarks) {
+                // Draw connections
+                const connections = [
+                    [0, 1], [1, 2], [2, 3], [3, 4],  // Thumb
+                    [0, 5], [5, 6], [6, 7], [7, 8],  // Index
+                    [0, 9], [9, 10], [10, 11], [11, 12],  // Middle
+                    [0, 13], [13, 14], [14, 15], [15, 16],  // Ring
+                    [0, 17], [17, 18], [18, 19], [19, 20],  // Pinky
+                    [5, 9], [9, 13], [13, 17]  // Palm
+                ];
+                
+                this.canvasCtx.strokeStyle = '#00FF00';
+                this.canvasCtx.lineWidth = 2;
+                this.canvasCtx.beginPath();
+                
+                connections.forEach(([start, end]) => {
+                    const startPoint = landmarks[start];
+                    const endPoint = landmarks[end];
+                    
+                    this.canvasCtx.moveTo(
+                        startPoint.x * this.outputCanvas.width,
+                        startPoint.y * this.outputCanvas.height
+                    );
+                    this.canvasCtx.lineTo(
+                        endPoint.x * this.outputCanvas.width,
+                        endPoint.y * this.outputCanvas.height
+                    );
+                });
+                
+                this.canvasCtx.stroke();
+                
+                // Draw points
+                this.canvasCtx.fillStyle = '#FF0000';
+                landmarks.forEach((landmark) => {
+                    const x = landmark.x * this.outputCanvas.width;
+                    const y = landmark.y * this.outputCanvas.height;
+                    
+                    this.canvasCtx.beginPath();
+                    this.canvasCtx.arc(x, y, 4, 0, 2 * Math.PI);
+                    this.canvasCtx.fill();
+                });
+            }
+            
+            simulateGestureRecognition(landmarks) {
+                const fingerStates = this.getFingerStates(landmarks);
+                const [thumbUp, indexUp, middleUp, ringUp, pinkyUp] = fingerStates;
+                
+                let gesture = 'unknown';
+                let confidence = 0.85;
+                
+                // Count extended fingers
+                const extendedCount = fingerStates.filter(state => state).length;
+                
+                // More precise gesture detection
+                if (extendedCount === 0) {
+                    gesture = 'fist';
+                    confidence = 0.95;
+                } else if (extendedCount === 5) {
+                    gesture = 'open_palm';
+                    confidence = 0.95;
+                } else if (indexUp && !middleUp && !ringUp && !pinkyUp) {
+                    // Only index finger up
+                    gesture = 'point_up';
+                    confidence = 0.90;
+                } else if (indexUp && middleUp && !ringUp && !pinkyUp) {
+                    // Index and middle up
+                    gesture = 'peace';
+                    confidence = 0.90;
+                } else if (thumbUp && !indexUp && !middleUp && !ringUp && !pinkyUp) {
+                    // Only thumb up
+                    gesture = 'thumbs_up';
+                    confidence = 0.90;
+                } else if (indexUp && !middleUp && !ringUp && pinkyUp) {
+                    // Index and pinky up (rock/horns)
+                    gesture = 'rock';
+                    confidence = 0.88;
+                } else if (extendedCount >= 3) {
+                    // Fallback for multiple fingers
+                    gesture = 'open_palm';
+                    confidence = 0.75;
+                } else {
+                    // Unclear gesture
+                    gesture = 'unknown';
+                    confidence = 0.60;
+                }
+                
+                this.updateGestureDisplay(gesture, confidence);
+                return gesture;
+            }
+            
+            handleDrawing(landmarks, gesture) {
+                // Get index finger tip position (landmark 8)
+                const indexTip = landmarks[8];
+                // Flip X coordinate to correct mirror effect
+                const canvasX = (1 - indexTip.x) * this.drawingCanvas.width;
+                const canvasY = indexTip.y * this.drawingCanvas.height;
+                
+                // Drawing logic based on gesture
+                if (gesture === 'point_up') {
+                    // Index finger up = draw
+                    if (this.lastDrawPoint) {
+                        this.drawingCtx.beginPath();
+                        this.drawingCtx.moveTo(this.lastDrawPoint.x, this.lastDrawPoint.y);
+                        this.drawingCtx.lineTo(canvasX, canvasY);
+                        this.drawingCtx.stroke();
+                    } else {
+                        // Start new stroke - save state for undo
+                        this.saveCanvasState();
+                    }
+                    this.lastDrawPoint = { x: canvasX, y: canvasY };
+                    this.isDrawing = true;
+                    
+                    // Draw cursor on drawing canvas
+                    this.drawingCtx.save();
+                    this.drawingCtx.fillStyle = this.currentColor;
+                    this.drawingCtx.beginPath();
+                    this.drawingCtx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
+                    this.drawingCtx.fill();
+                    this.drawingCtx.restore();
+                    
+                } else if (gesture === 'fist') {
+                    // Fist = stop drawing
+                    this.isDrawing = false;
+                    this.lastDrawPoint = null;
+                    
+                } else if (gesture === 'open_palm') {
+                    // Open palm = erase/clear area
+                    if (!this.lastDrawPoint) {
+                        this.saveCanvasState(); // Save state before erasing
+                    }
+                    this.drawingCtx.save();
+                    this.drawingCtx.globalCompositeOperation = 'destination-out';
+                    this.drawingCtx.beginPath();
+                    this.drawingCtx.arc(canvasX, canvasY, 20, 0, 2 * Math.PI);
+                    this.drawingCtx.fill();
+                    this.drawingCtx.restore();
+                    this.lastDrawPoint = { x: canvasX, y: canvasY }; // Track eraser movement
+                    
+                } else {
+                    // Other gestures = no drawing
+                    this.isDrawing = false;
+                    this.lastDrawPoint = null;
+                }
+                
+                // Update drawing cursor on camera feed
+                this.canvasCtx.save();
+                this.canvasCtx.fillStyle = this.isDrawing ? '#00FF00' : '#FF0000';
+                this.canvasCtx.beginPath();
+                this.canvasCtx.arc(
+                    indexTip.x * this.outputCanvas.width,  // Keep camera cursor as-is (mirrored)
+                    indexTip.y * this.outputCanvas.height,
+                    8, 0, 2 * Math.PI
+                );
+                this.canvasCtx.fill();
+                this.canvasCtx.restore();
+            }
+            
+            getFingerStates(landmarks) {
+                // Improved finger detection with better thresholds
+                const lm = landmarks;
+                
+                // Thumb: Compare tip (4) with joint (3) considering hand orientation
+                const thumbUp = lm[4].y < lm[3].y && lm[4].y < lm[2].y;
+                
+                // Index finger: Compare tip (8) with joints (6, 7)
+                const indexUp = lm[8].y < lm[6].y && lm[8].y < lm[7].y - 0.02;
+                
+                // Middle finger: Compare tip (12) with joints (10, 11)
+                const middleUp = lm[12].y < lm[10].y && lm[12].y < lm[11].y - 0.02;
+                
+                // Ring finger: Compare tip (16) with joints (14, 15)
+                const ringUp = lm[16].y < lm[14].y && lm[16].y < lm[15].y - 0.02;
+                
+                // Pinky: Compare tip (20) with joints (18, 19)
+                const pinkyUp = lm[20].y < lm[18].y && lm[20].y < lm[19].y - 0.02;
+                
+                return [thumbUp, indexUp, middleUp, ringUp, pinkyUp];
+            }
+            
+            stabilizeGesture(newGesture) {
+                // Add new gesture to history
+                this.gestureHistory.push(newGesture);
+                
+                // Keep only recent frames
+                if (this.gestureHistory.length > this.gestureStabilityFrames) {
+                    this.gestureHistory.shift();
+                }
+                
+                // Count occurrences of each gesture
+                const gestureCounts = {};
+                this.gestureHistory.forEach(gesture => {
+                    gestureCounts[gesture] = (gestureCounts[gesture] || 0) + 1;
+                });
+                
+                // Find most common gesture
+                let mostCommon = newGesture;
+                let maxCount = 0;
+                
+                for (const [gesture, count] of Object.entries(gestureCounts)) {
+                    if (count > maxCount) {
+                        maxCount = count;
+                        mostCommon = gesture;
+                    }
+                }
+                
+                // Only change if we have confidence (majority of frames)
+                if (maxCount >= Math.ceil(this.gestureStabilityFrames / 2)) {
+                    this.lastStableGesture = mostCommon;
+                }
+                
+                return this.lastStableGesture;
+            }
+            
+            updateGestureDisplay(gesture, confidence) {
+                const gestureNames = {
+                    'fist': 'FIST',
+                    'open_palm': 'OPEN PALM',
+                    'peace': 'PEACE',
+                    'point_up': 'POINT UP',
+                    'rock': 'ROCK',
+                    'thumbs_up': 'THUMBS UP',
+                    'unknown': 'UNKNOWN'
+                };
+                
+                const displayText = gesture === 'No hand detected' ? 
+                                   'Show your hand to the camera' : 
+                                   gestureNames[gesture] || gesture.replace('_', ' ').toUpperCase();
+                
+                // Add animation class when gesture changes
+                if (this.gestureDisplay.textContent !== displayText) {
+                    this.gestureDisplay.classList.add('active');
+                    setTimeout(() => {
+                        this.gestureDisplay.classList.remove('active');
+                    }, 300);
+                }
+                
+                this.gestureDisplay.textContent = displayText;
+                
+                const confidencePercent = Math.round(confidence * 100);
+                this.confidenceText.textContent = gesture === 'No hand detected' ? 
+                                                 'Waiting for hand...' :
+                                                 `Confidence: ${confidencePercent}%`;
+                
+                this.confidenceFill.style.width = `${confidencePercent}%`;
+                
+                // Color coding
+                if (confidence > 0.8) {
+                    this.confidenceFill.style.backgroundColor = '#28a745';
+                    this.gestureDisplay.style.color = '#28a745';
+                } else if (confidence > 0.6) {
+                    this.confidenceFill.style.backgroundColor = '#ffc107';
+                    this.gestureDisplay.style.color = '#ffc107';
+                } else {
+                    this.confidenceFill.style.backgroundColor = '#dc3545';
+                    this.gestureDisplay.style.color = '#dc3545';
+                }
+                
+                if (gesture === 'No hand detected') {
+                    this.gestureDisplay.style.color = '#ffffff';
+                    this.confidenceFill.style.backgroundColor = '#666';
+                }
+            }
+            
+            updateFPS() {
+                this.frameCount++;
+                const now = performance.now();
+                const deltaTime = now - this.lastTime;
+                
+                if (deltaTime >= 1000) {
+                    const fps = Math.round((this.frameCount * 1000) / deltaTime);
+                    this.fpsDisplay.textContent = `FPS: ${fps}`;
+                    this.frameCount = 0;
+                    this.lastTime = now;
+                }
+            }
+            
+            async startRecognition() {
+                if (this.isRunning) return;
+                
+                try {
+                    console.log('🚀 Starting gesture recognition...');
+                    
+                    this.initializeMediaPipe();
+                    await this.initializeCamera();
+                    
+                    this.outputCanvas.width = this.inputVideo.videoWidth || 640;
+                    this.outputCanvas.height = this.inputVideo.videoHeight || 480;
+                    
+                    this.isRunning = true;
+                    this.startBtn.disabled = true;
+                    this.stopBtn.disabled = false;
+                    
+                    console.log('✅ Gesture recognition started successfully');
+                    
+                } catch (error) {
+                    console.error(`❌ Error starting recognition: ${error.message}`);
+                    this.updateStatus('camera_status', 'Start Failed ❌', 'error');
+                }
+            }
+            
+            stopRecognition() {
+                if (!this.isRunning) return;
+                
+                console.log('⏹️ Stopping gesture recognition...');
+                
+                this.isRunning = false;
+                
+                if (this.camera) {
+                    this.camera.stop();
+                }
+                
+                this.canvasCtx.clearRect(0, 0, this.outputCanvas.width, this.outputCanvas.height);
+                this.updateGestureDisplay('Stopped', 0);
+                this.fpsDisplay.textContent = 'FPS: --';
+                
+                this.startBtn.disabled = false;
+                this.stopBtn.disabled = true;
+                
+                this.updateStatus('camera_status', 'Camera Stopped', 'loading');
+                
+                console.log('✅ Gesture recognition stopped');
+            }
+            
+            updateStatus(elementId, text, className) {
+                const element = document.getElementById(elementId);
+                element.textContent = text;
+                element.className = `status ${className}`;
+            }
+        }
+
+        // Initialize app when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎯 Initializing Virtual Notepad...');
+            
+            // Wait for all external scripts to load
+            function waitForScripts() {
+                return new Promise((resolve) => {
+                    let checkCount = 0;
+                    const maxChecks = 50; // 5 seconds max wait
+                    
+                    function checkScripts() {
+                        checkCount++;
+                        console.log(`🔄 Checking scripts... (${checkCount}/${maxChecks})`);
+                        
+                        const tfLoaded = typeof tf !== 'undefined';
+                        const handsLoaded = typeof Hands !== 'undefined';
+                        const cameraLoaded = typeof Camera !== 'undefined';
+                        
+                        console.log(`TensorFlow.js: ${tfLoaded ? '✅' : '❌'}`);
+                        console.log(`MediaPipe Hands: ${handsLoaded ? '✅' : '❌'}`);
+                        console.log(`Camera Utils: ${cameraLoaded ? '✅' : '❌'}`);
+                        
+                        if (tfLoaded && handsLoaded && cameraLoaded) {
+                            console.log('✅ All scripts loaded successfully');
+                            resolve(true);
+                        } else if (checkCount >= maxChecks) {
+                            console.warn('⚠️ Script loading timeout - starting with available features');
+                            resolve(false);
+                        } else {
+                            setTimeout(checkScripts, 100);
+                        }
+                    }
+                    
+                    checkScripts();
+                });
+            }
+            
+            // Initialize with error handling
+            waitForScripts().then((allLoaded) => {
+                try {
+                    // Hide loading overlay
+                    const loadingOverlay = document.getElementById('loading-overlay');
+                    if (loadingOverlay) {
+                        setTimeout(() => {
+                            loadingOverlay.style.opacity = '0';
+                            setTimeout(() => {
+                                loadingOverlay.style.display = 'none';
+                            }, 500);
+                        }, 1000);
+                    }
+                    
+                    if (allLoaded) {
+                        console.log('Starting full-featured app');
+                        window.app = new VirtualNotepadApp();
+                    } else {
+                        console.log('Starting with limited features');
+                        // Create a minimal version that works with just drawing
+                        window.app = new VirtualNotepadApp();
+                    }
+                } catch (error) {
+                    console.error('App initialization failed:', error.message);
+                    
+                    // Hide loading overlay on error
+                    const loadingOverlay = document.getElementById('loading-overlay');
+                    if (loadingOverlay) {
+                        loadingOverlay.style.display = 'none';
+                    }
+                    
+                    // Show error to user
+                    const errorDiv = document.getElementById('error-display');
+                    if (errorDiv) {
+                        errorDiv.style.display = 'block';
+                        errorDiv.innerHTML = `<strong>Initialization Error:</strong> ${error.message}<br><small>Try refreshing the page</small>`;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
