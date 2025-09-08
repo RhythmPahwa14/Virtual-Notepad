@@ -1,0 +1,57 @@
+{
+  "format": "layers-model",
+  "generatedBy": "Manual Conversion",
+  "convertedBy": "Virtual Notepad Converter",
+  "modelTopology": {
+    "class_name": "Sequential",
+    "config": {
+      "name": "gesture_model",
+      "layers": [
+        {
+          "class_name": "InputLayer",
+          "config": {
+            "batch_input_shape": [
+              null,
+              21,
+              3
+            ],
+            "dtype": "float32",
+            "name": "input"
+          }
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "units": 5,
+            "activation": "softmax",
+            "name": "predictions"
+          }
+        }
+      ]
+    }
+  },
+  "weightsManifest": [
+    {
+      "paths": [
+        "weights.bin"
+      ],
+      "weights": [
+        {
+          "name": "predictions/kernel",
+          "shape": [
+            63,
+            5
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "predictions/bias",
+          "shape": [
+            5
+          ],
+          "dtype": "float32"
+        }
+      ]
+    }
+  ]
+}

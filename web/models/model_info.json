@@ -1,0 +1,21 @@
+{
+  "classes": [
+    "fist",
+    "open_palm",
+    "peace",
+    "rock",
+    "thumbs_up"
+  ],
+  "input_shape": [
+    21,
+    3
+  ],
+  "num_classes": 5,
+  "preprocessing": {
+    "normalize": true,
+    "center_landmarks": true,
+    "scale_to_unit_sphere": true
+  },
+  "model_format": "tfjs_layers_model",
+  "version": "1.0.0"
+}
