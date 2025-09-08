@@ -6,9 +6,6 @@
 
 
 ## Features
-=======
-## New Features
-
 
 ### Core Functionality
 - **Real-time Hand Tracking**: Advanced MediaPipe integration for precise hand detection
