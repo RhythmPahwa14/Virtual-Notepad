@@ -146,8 +146,8 @@ Virtual-Notepad/
 
 ## Development Team
 
-- **Rhythm Pahwa** - Lead Developer & UI/UX Designer | [LinkedIn](https://linkedin.com/in/rhythmpahwa)
-- **Chaitnya Dhar Dwivedi** - Co-Developer & ML Engineer | [LinkedIn](https://linkedin.com/in/chaitnya-dhar-dwivedi)
+- **Rhythm Pahwa** - Lead Developer | [LinkedIn](https://www.linkedin.com/in/pahwa-rhythm/)
+- **Chaitnya Dhar Dwivedi** - Co-Developer| [LinkedIn](https://www.linkedin.com/in/chaitnya-dhar-dwivedi-65333a255/)
 
 *Built with passion for computer vision, machine learning, and creating intuitive user experiences.*
 
@@ -170,14 +170,5 @@ We welcome contributions to improve the Virtual Notepad experience:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- **MediaPipe Team** for exceptional hand tracking technology
-- **TensorFlow.js Team** for browser-based machine learning capabilities
-- **Google Fonts** for the beautiful Poppins typography
-- **Vercel** for seamless deployment infrastructure
-
----
 
 **Star this repository if you found it helpful and follow us for more innovative projects!**
