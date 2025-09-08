@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Notepad - AI Gesture Recognition</title>
+    <meta http-equiv="refresh" content="0; url=./working-notepad.html">
+    <link rel="canonical" href="./working-notepad.html">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+        }
+        .redirect-info {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-info">
+        <h1>Virtual Notepad</h1>
+        <p class="loading">Redirecting to AI Gesture Recognition...</p>
+        <p>If you're not redirected automatically, <a href="./working-notepad.html" style="color: #fff; text-decoration: underline;">click here</a>.</p>
+    </div>
+    
+    <script>
+        // Fallback redirect if meta refresh doesn't work
+        setTimeout(() => {
+            window.location.href = './working-notepad.html';
+        }, 1000);
+    </script>
+</body>
+</html>
