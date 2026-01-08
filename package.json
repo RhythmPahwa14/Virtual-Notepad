@@ -1,18 +1,17 @@
 {
-  "name": "virtual-notepad-web",
-  "version": "1.0.0",
-  "description": "AI-powered hand gesture recognition with MediaPipe and TensorFlow.js",
-  "main": "web/index.html",
+  "name": "virtual-notepad-html",
+  "version": "2.0.0",
+  "description": "AI-powered hand gesture recognition virtual notepad with pure HTML/JavaScript interface",
+  "type": "module",
   "scripts": {
-    "dev": "python -m http.server 8000 --directory web",
-    "build": "python train_model.py && python export_model.py && python convert_to_tfjs.py",
-    "deploy:vercel": "vercel --prod",
-    "deploy:netlify": "netlify deploy --prod --dir=web",
-    "train": "python train_model.py",
-    "export": "python export_model.py",
-    "convert": "python convert_to_tfjs.py",
-    "test": "echo \"No tests specified\"",
-    "start": "npm run dev"
+    "serve": "python -m http.server 3000",
+    "dev": "python -m http.server 3000",
+    "train": "python scripts/train_model.py",
+    "collect-data": "python scripts/collect_data.py",
+    "evaluate": "python scripts/evaluate_model.py",
+    "export": "python scripts/export_model.py",
+    "convert": "python scripts/convert_to_tfjs.py",
+    "test:ml": "python -m pytest tests/"
   },
   "keywords": [
     "gesture-recognition",
@@ -20,7 +19,9 @@
     "tensorflow",
     "computer-vision",
     "machine-learning",
-    "web-ai"
+    "html",
+    "javascript",
+    "virtual-notepad"
   ],
   "author": "Virtual Notepad Team",
   "license": "MIT",
@@ -28,9 +29,7 @@
     "type": "git",
     "url": "https://github.com/RhythmPahwa14/Virtual-Notepad.git"
   },
-  "devDependencies": {},
-  "dependencies": {},
   "engines": {
-    "node": ">=16.0.0"
+    "python": ">=3.8.0"
   }
 }
