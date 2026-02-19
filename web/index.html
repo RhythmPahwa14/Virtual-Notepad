@@ -1,49 +1,216 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Notepad - AI Gesture Recognition</title>
-    <meta http-equiv="refresh" content="0; url=./working-notepad.html">
-    <link rel="canonical" href="./working-notepad.html">
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Virtual Notepad | Spatial Computing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#6a9ae7", "background-light": "#f6f7f8", "background-dark": "#121720"}, fontFamily: {display: "Inter"}, borderRadius: {DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px"}}}};</script>
+<style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-            padding: 50px;
-            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #f1f1f1;
+            overflow-x: hidden;
         }
-        .redirect-info {
-            background: rgba(255,255,255,0.1);
-            padding: 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            max-width: 500px;
-            margin: 0 auto;
+        .text-huge {
+            font-size: clamp(3rem, 12vw, 9rem);
+            line-height: 0.85;
+            letter-spacing: -0.05em;
         }
-        .loading {
-            animation: pulse 1.5s infinite;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body>
-    <div class="redirect-info">
-        <h1>Virtual Notepad</h1>
-        <p class="loading">Redirecting to AI Gesture Recognition...</p>
-        <p>If you're not redirected automatically, <a href="./working-notepad.html" style="color: #fff; text-decoration: underline;">click here</a>.</p>
-    </div>
-    
-    <script>
-        // Fallback redirect if meta refresh doesn't work
-        setTimeout(() => {
-            window.location.href = './working-notepad.html';
-        }, 1000);
-    </script>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-[1440px] mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-6 bg-primary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-white">edit_note</span>
+</div>
+<span class="font-black tracking-tighter text-xl uppercase">Virtual Notepad</span>
+</div>
+<div class="hidden md:flex items-center gap-12">
+<a class="text-[10px] font-bold tracking-[0.2em] uppercase hover:text-primary transition-colors" href="#">Spatial</a>
+<a class="text-[10px] font-bold tracking-[0.2em] uppercase hover:text-primary transition-colors" href="#">Canvas</a>
+<a class="text-[10px] font-bold tracking-[0.2em] uppercase hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-[10px] font-bold tracking-[0.2em] uppercase hover:text-primary transition-colors" href="#">Features</a>
+</div>
+<button onclick="window.location.href='./working-notepad.html'" class="bg-white text-black hover:bg-primary hover:text-white transition-all duration-300 rounded-full px-6 py-2 text-[10px] font-bold tracking-[0.1em] uppercase">
+                Get Started
+            </button>
+</div>
+</nav>
+<main class="pt-20">
+<!-- Hero Section: Asymmetrical Editorial Layout -->
+<section class="relative min-h-[90vh] flex flex-col lg:flex-row items-center overflow-hidden">
+<!-- Cinematic Visual Left -->
+<div class="w-full lg:w-1/2 h-[50vh] lg:h-screen relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-r from-background-dark via-transparent to-background-dark z-10"></div>
+<img alt="Spatial Computing Visualization" class="w-full h-full object-cover scale-110 grayscale brightness-75 contrast-125" data-alt="Abstract cinematic liquid silver hand reaching through particle cloud" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPwwxQ3H3v3XGj20XaDTVlBNo8VRIrM7HHRf5U1uwmYBZQCMU0qq1o_9dWLASV5Zoh2xer5ly-PD5kiA22o-RF5F8H7Ruley5fNh9r_2-usdgUWYn1Cynj8swhhTiG_Zqfx0_EDJrLVd-0VjXzrFmsw69y8_fMg8nQ3MmUHJCbNFLrEzu-TAiZ29CFieMuMIYaW-ZUush72VjFt-IjkbhTIk71C7b3aWDwepTuJ8AyygRArrbJYvHfWesjnR7JxmdWHSs_Iq8uoEWw"/>
+<div class="absolute bottom-12 left-12 z-20 hidden lg:block">
+<p class="text-white/40 text-[10px] font-bold tracking-[0.3em] uppercase mb-4">Redefining Documentation</p>
+<div class="w-24 h-[1px] bg-white/20"></div>
+</div>
+</div>
+<!-- Massive Typography Right -->
+<div class="w-full lg:w-1/2 p-8 lg:p-20 flex flex-col justify-center items-start">
+<h1 class="text-huge font-black text-white mb-8">
+                    VIRTUAL<br/>NOTEPAD
+                </h1>
+<p class="text-white/60 text-lg md:text-xl max-w-md leading-relaxed mb-10 font-light">
+                    Experience zero-latency digital ink in three-dimensional space. The boundary between physical and digital thought has vanished.
+                </p>
+<div class="flex flex-wrap gap-4">
+<button onclick="window.location.href='./working-notepad.html'" class="bg-primary hover:bg-primary/80 text-white rounded-full px-10 py-5 text-sm font-bold tracking-widest uppercase transition-transform active:scale-95">
+                        Start Creating
+                    </button>
+<button class="border border-white/20 hover:bg-white hover:text-black text-white rounded-full px-10 py-5 text-sm font-bold tracking-widest uppercase transition-all">
+                        Watch Demo
+                    </button>
+</div>
+</div>
+</section>
+<!-- Core Capabilities Grid -->
+<section class="py-24 px-6 md:px-20 border-t border-white/5">
+<div class="max-w-[1440px] mx-auto">
+<div class="flex flex-col lg:flex-row gap-20">
+<!-- Column 1: Spatial Gestures -->
+<div class="flex-1 group">
+<span class="text-primary text-sm font-black tracking-widest mb-6 block">01</span>
+<h2 class="text-4xl font-bold mb-6 tracking-tight">Spatial Gestures</h2>
+<p class="text-white/50 leading-relaxed mb-8">
+                            Navigate your ideas with industry-leading hand tracking. Natural mapping transforms every pinch and swipe into precise digital action.
+                        </p>
+<div class="aspect-square rounded-xl overflow-hidden glass-card p-1">
+<img alt="Gesture Control" class="w-full h-full object-cover rounded-lg opacity-40 group-hover:opacity-100 transition-opacity duration-700" data-alt="Monochrome close up of high-tech hand gesture sensors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLlhhQRolGw_yuq_Usa6aOtWR9Dhhl2DB3_frYJQa9ElsV0res5qUKCH7xWHZmvouKDWT5PnGqbryN_vYYgAJQi2WQCBELKHS3_mQiquJtQjLutoXkOXEOf-8YrjG4RPWIxFw46hzy4930KWGWHN8aof8lb9u83IOjDZdaMAc9kpeM6Br4n4GyFKaqLGnzqGgklCp3LsVs6u7b7nBc-WqbXuY6i9hF111Xr9SMoSD1utR0NSj8zXM-HJcvYw_Zk8t3J2pv02z2JT_0"/>
+</div>
+</div>
+<!-- Column 2: Real-time Canvas -->
+<div class="flex-1 group pt-0 lg:pt-32">
+<span class="text-primary text-sm font-black tracking-widest mb-6 block">02</span>
+<h2 class="text-4xl font-bold mb-6 tracking-tight">Real-time Canvas</h2>
+<p class="text-white/50 leading-relaxed mb-8">
+                            Collaborate on an infinite digital plane. Multi-user spatial synchronization ensures that teams remain aligned regardless of physical distance.
+                        </p>
+<div class="aspect-square rounded-xl overflow-hidden glass-card p-1">
+<img alt="Global Network" class="w-full h-full object-cover rounded-lg opacity-40 group-hover:opacity-100 transition-opacity duration-700" data-alt="Abstract white glowing grid representing a global digital network" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz61GqFDpfaIvbGG5u9cgGQYl13aYcej_EJqgyHodwg86hezDWAOS8YHDABs_dp4_Qea-HvwmCPaz7qUuNaPTeAMaW01gM9XnPiVYKeWAmSyoFD0PvSYjlXXjAep64R2gb1ZWr34d-b7DemWz4Awa7-tQ7eJe1diUbHDEtv6nZ2KOtVicdJ2cjIn9kF8FctfU4beVgp3G3tNiRsILiB46zn4lq5kwRz5LZdf3wCLEO_xKetujp6_k3LA38JAQntn0JY_zBdLOD8zbx"/>
+</div>
+</div>
+<!-- Column 3: Privacy First -->
+<div class="flex-1 group">
+<span class="text-primary text-sm font-black tracking-widest mb-6 block">03</span>
+<h2 class="text-4xl font-bold mb-6 tracking-tight">Privacy First</h2>
+<p class="text-white/50 leading-relaxed mb-8">
+                            Your thoughts are your own. We utilize local-first encryption and on-device processing to ensure maximum security for your data.
+                        </p>
+<div class="aspect-square rounded-xl overflow-hidden glass-card p-1">
+<img alt="Data Security" class="w-full h-full object-cover rounded-lg opacity-40 group-hover:opacity-100 transition-opacity duration-700" data-alt="Minimalist geometric server nodes with subtle light highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0kxeYgX8-sxRNUK0GXc96e_8qd9KYOJqqoyJnjlfep0r9LjRYBrju0y6iZgYysGamQvrqm94dnYUJxe2JPPRK8gjCHciPKm9SJQe7iQdxSM2E5nVJNeclx7AD_QtLwOr44z2AzUwcvkAt4ceT6CjJDmBlvKOdNhRM0jh7Sy7YIVPJFLwQ0Nk7zPeyvXROWTbzgq55_9rd1Nb_1U99X_mdHL24Ov47mJEsypy09zKlKmABRKvFP32XOCI7UKKjLYhijgwNpVQ3TeRN"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Horizontal Feature Gallery -->
+<section class="py-24 bg-white/5">
+<div class="px-6 md:px-20 mb-12 flex justify-between items-end">
+<div>
+<p class="text-primary text-xs font-bold tracking-[0.4em] uppercase mb-4">The Ecosystem</p>
+<h2 class="text-5xl font-black tracking-tighter">UNPARALLELED TOOLS</h2>
+</div>
+<div class="flex gap-4">
+<button class="size-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<button class="size-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="flex gap-6 overflow-x-auto px-6 md:px-20 pb-12 hide-scrollbar">
+<!-- Card 1 -->
+<div class="min-w-[400px] aspect-[4/5] glass-card rounded-2xl p-8 flex flex-col justify-between group hover:border-primary/50 transition-all cursor-pointer">
+<div class="size-14 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">draw</span>
+</div>
+<div>
+<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">Haptic Feedback</h3>
+<p class="text-white/40 text-sm leading-relaxed">Precise tactile response for every virtual stroke, mimicking the feel of physical paper.</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="min-w-[400px] aspect-[4/5] glass-card rounded-2xl p-8 flex flex-col justify-between group hover:border-primary/50 transition-all cursor-pointer">
+<div class="size-14 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+<div>
+<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">AI Handwriting</h3>
+<p class="text-white/40 text-sm leading-relaxed">Convert your spatial sketches into editable text and vectorized assets instantly.</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="min-w-[400px] aspect-[4/5] glass-card rounded-2xl p-8 flex flex-col justify-between group hover:border-primary/50 transition-all cursor-pointer">
+<div class="size-14 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">cloud_sync</span>
+</div>
+<div>
+<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">Cloud Sync</h3>
+<p class="text-white/40 text-sm leading-relaxed">Seamlessly move between VR headsets and mobile devices with encrypted sync.</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="min-w-[400px] aspect-[4/5] glass-card rounded-2xl p-8 flex flex-col justify-between group hover:border-primary/50 transition-all cursor-pointer">
+<div class="size-14 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">vrpano</span>
+</div>
+<div>
+<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">VR Export</h3>
+<p class="text-white/40 text-sm leading-relaxed">Turn your notes into immersive presentation rooms with a single gesture.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="py-40 text-center px-6">
+<h2 class="text-huge font-black mb-12 tracking-tighter opacity-20">FUTURE IS HERE</h2>
+<div class="max-w-2xl mx-auto">
+<p class="text-2xl mb-12 text-white/80">Ready to transcend the traditional notepad?</p>
+<button onclick="window.location.href='./working-notepad.html'" class="bg-white text-black rounded-full px-16 py-6 text-sm font-black tracking-[0.2em] uppercase hover:bg-primary hover:text-white transition-all scale-110">
+                    Get Access Now
+                </button>
+</div>
+</section>
+</main>
+<footer class="border-t border-white/5 py-12 px-6 md:px-20 bg-background-dark">
+<div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-3 opacity-50">
+<div class="size-5 bg-white rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-black">edit_note</span>
+</div>
+<span class="font-black tracking-tighter text-sm uppercase">Virtual Notepad</span>
+</div>
+<div class="flex gap-10 opacity-40">
+<a class="text-[10px] font-bold tracking-widest uppercase hover:opacity-100" href="#">Twitter</a>
+<a class="text-[10px] font-bold tracking-widest uppercase hover:opacity-100" href="#">Discord</a>
+<a class="text-[10px] font-bold tracking-widest uppercase hover:opacity-100" href="#">Status</a>
+</div>
+<p class="text-[10px] font-bold tracking-widest uppercase opacity-30">© 2024 VIRTUAL NOTEPAD INC.</p>
+</div>
+</footer>
 </body>
 </html>
