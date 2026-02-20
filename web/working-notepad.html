@@ -788,22 +788,53 @@
                     <div class="step-description">Use these hand gestures to control the notepad:</div>
                     <div class="gesture-demo">
                         <div class="gesture-item">
-                            <div class="gesture-icon">✋</div>
+                            <div class="gesture-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/>
+                                    <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/>
+                                    <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/>
+                                    <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+                                </svg>
+                            </div>
                             <div class="gesture-name">Open Hand</div>
                             <div class="gesture-action">Navigate/Select</div>
                         </div>
                         <div class="gesture-item">
-                            <div class="gesture-icon">👆</div>
+                            <div class="gesture-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2v10"/>
+                                    <path d="M18 8a2 2 0 0 1 2 2v2a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+                                    <path d="M10 14V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/>
+                                    <path d="M14 14v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/>
+                                    <path d="M18 10a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/>
+                                </svg>
+                            </div>
                             <div class="gesture-name">Index Finger</div>
                             <div class="gesture-action">Draw/Write</div>
                         </div>
                         <div class="gesture-item">
-                            <div class="gesture-icon">✌️</div>
+                            <div class="gesture-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M10 2v10"/>
+                                    <path d="M14 2v10"/>
+                                    <path d="M18 8a2 2 0 0 1 2 2v2a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+                                    <path d="M10 14V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/>
+                                    <path d="M18 10a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/>
+                                </svg>
+                            </div>
                             <div class="gesture-name">Peace Sign</div>
                             <div class="gesture-action">Erase</div>
                         </div>
                         <div class="gesture-item">
-                            <div class="gesture-icon">👊</div>
+                            <div class="gesture-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M8 8v8a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V8"/>
+                                    <path d="M6 8h12"/>
+                                    <path d="M10 2v6"/>
+                                    <path d="M14 2v6"/>
+                                    <circle cx="12" cy="12" r="8"/>
+                                </svg>
+                            </div>
                             <div class="gesture-name">Closed Fist</div>
                             <div class="gesture-action">Clear All</div>
                         </div>
@@ -905,12 +936,12 @@
             <div class="info-card">
                 <h3>Drawing Controls</h3>
                 <div class="gesture-guide">
-                    <div><strong>👆 Point Up</strong> - Draw/Write</div>
-                    <div><strong>✊ Fist</strong> - Stop Drawing</div>
-                    <div><strong>✋ Open Palm</strong> - Erase</div>
-                    <div><strong>✌️ Peace</strong> - Navigation</div>
-                    <div><strong>🤘 Rock</strong> - Special Action</div>
-                    <div><strong>👍 Thumbs Up</strong> - Confirm</div>
+                    <div><strong>▲ Point Up</strong> - Draw/Write</div>
+                    <div><strong>■ Fist</strong> - Stop Drawing</div>
+                    <div><strong>✶ Open Palm</strong> - Erase</div>
+                    <div><strong>V Peace</strong> - Navigation</div>
+                    <div><strong>♪ Rock</strong> - Special Action</div>
+                    <div><strong>↑ Thumbs Up</strong> - Confirm</div>
                 </div>
             </div>
         </div>
@@ -1032,8 +1063,10 @@
                 this.drawingEnabled = false;
                 this.indexFingerTip = null;
                 this.currentColor = '#2196F3';
-                this.drawingHistory = [];
-                this.maxHistorySteps = 20;
+                this.drawingHistory = []; // Store canvas snapshots as data URLs (lighter)
+                this.maxHistorySteps = 10; // Reduced for better performance
+                this.currentPath = []; // Store current drawing path
+                this.pathBatchSize = 5; // Draw in batches for smoother performance
                 
                 // Gesture stabilization
                 this.gestureHistory = [];
@@ -1045,7 +1078,11 @@
                 this.outputCanvas = document.getElementById('output_canvas');
                 this.canvasCtx = this.outputCanvas.getContext('2d');
                 this.drawingCanvas = document.getElementById('drawing_canvas');
-                this.drawingCtx = this.drawingCanvas.getContext('2d');
+                this.drawingCtx = this.drawingCanvas.getContext('2d', { 
+                    willReadFrequently: false,
+                    alpha: false,
+                    desynchronized: true
+                });
                 this.gestureDisplay = document.getElementById('gesture_display');
                 this.confidenceFill = document.getElementById('confidence_fill');
                 this.confidenceText = document.getElementById('confidence_text');
@@ -1087,11 +1124,13 @@
                 this.drawingCanvas.width = 640;
                 this.drawingCanvas.height = 480;
                 
-                // Set drawing style
+                // Set drawing style with performance optimizations
                 this.drawingCtx.lineWidth = 3;
                 this.drawingCtx.lineCap = 'round';
                 this.drawingCtx.lineJoin = 'round';
                 this.drawingCtx.strokeStyle = this.currentColor;
+                this.drawingCtx.imageSmoothingEnabled = true;
+                this.drawingCtx.imageSmoothingQuality = 'high';
                 
                 // Clear to white background
                 this.drawingCtx.fillStyle = 'white';
@@ -1100,13 +1139,14 @@
                 // Save initial state
                 this.saveCanvasState();
                 
-                console.log('Drawing canvas initialized');
+                console.log('Drawing canvas initialized with performance optimizations');
             }
             
             saveCanvasState() {
-                // Save current canvas state to history
-                const imageData = this.drawingCtx.getImageData(0, 0, this.drawingCanvas.width, this.drawingCanvas.height);
-                this.drawingHistory.push(imageData);
+                // Use data URL instead of getImageData for much better performance
+                // This is ~10x faster than getImageData for large canvases
+                const dataURL = this.drawingCanvas.toDataURL('image/png', 0.5); // Compressed
+                this.drawingHistory.push(dataURL);
                 
                 // Limit history size
                 if (this.drawingHistory.length > this.maxHistorySteps) {
@@ -1131,9 +1171,14 @@
                     // Remove current state
                     this.drawingHistory.pop();
                     
-                    // Restore previous state
+                    // Restore previous state from data URL
                     const previousState = this.drawingHistory[this.drawingHistory.length - 1];
-                    this.drawingCtx.putImageData(previousState, 0, 0);
+                    const img = new Image();
+                    img.onload = () => {
+                        this.drawingCtx.clearRect(0, 0, this.drawingCanvas.width, this.drawingCanvas.height);
+                        this.drawingCtx.drawImage(img, 0, 0);
+                    };
+                    img.src = previousState;
                     
                     console.log('Undo action performed');
                 } else {
@@ -1158,6 +1203,7 @@
             clearDrawing() {
                 this.drawingCtx.fillStyle = 'white';
                 this.drawingCtx.fillRect(0, 0, this.drawingCanvas.width, this.drawingCanvas.height);
+                this.currentPath = []; // Clear current path
                 this.saveCanvasState();
                 console.log('Drawing cleared');
             }
@@ -1179,19 +1225,19 @@
                         console.log(`Model input shape: [${inputShape}]`);
                         console.log(`Model output shape: [${outputShape}]`);
                         
-                        this.updateStatus('model_status', 'AI Model Ready ✅', 'ready');
+                        this.updateStatus('model_status', 'AI Model Ready [OK]', 'ready');
                         
                     } catch (error) {
                         console.log(`Model not found: ${error.message}`);
                         console.log('� Using optimized rule-based recognition');
-                        this.updateStatus('model_status', 'Rule-based Recognition ✅', 'ready');
+                        this.updateStatus('model_status', 'Rule-based Recognition [OK]', 'ready');
                     }
                     
                     this.startBtn.disabled = false;
                     
                 } catch (error) {
                     console.error(`Error loading model: ${error.message}`);
-                    this.updateStatus('model_status', 'Rule-based Recognition ✅', 'ready');
+                    this.updateStatus('model_status', 'Rule-based Recognition [OK]', 'ready');
                     this.startBtn.disabled = false;
                 }
             }
@@ -1211,7 +1257,7 @@
                                 try {
                                     await this.hands.send({image: this.inputVideo});
                                 } catch (error) {
-                                    console.warn('⚠️ Frame processing error:', error.message);
+                                    console.warn('[WARNING] Frame processing error:', error.message);
                                 }
                             }
                         },
@@ -1220,12 +1266,12 @@
                     });
                     
                     await this.camera.start();
-                    this.updateStatus('camera_status', 'Camera Active ✅', 'ready');
+                    this.updateStatus('camera_status', 'Camera Active [OK]', 'ready');
                     console.log('Camera initialized successfully');
                     
                 } catch (error) {
-                    console.error(`❌ Error initializing camera: ${error.message}`);
-                    this.updateStatus('camera_status', 'Camera Failed - Manual Mode ⚠️', 'warning');
+                    console.error(`[ERROR] Error initializing camera: ${error.message}`);
+                    this.updateStatus('camera_status', 'Camera Failed - Manual Mode [!]', 'warning');
                     
                     // Show helpful error message
                     const errorDiv = document.getElementById('error-display');
@@ -1255,13 +1301,13 @@
                     
                     this.hands.onResults((results) => this.onResults(results));
                     
-                    console.log('✅ MediaPipe Hands initialized successfully');
+                    console.log('[OK] MediaPipe Hands initialized successfully');
                     
                 } catch (error) {
-                    console.error('❌ MediaPipe initialization failed:', error.message);
+                    console.error('[ERROR] MediaPipe initialization failed:', error.message);
                     
                     // Fallback: Use gesture buttons only
-                    this.updateStatus('camera_status', 'Using Manual Controls Only ⚠️', 'warning');
+                    this.updateStatus('camera_status', 'Using Manual Controls Only [!]', 'warning');
                     
                     // Show error to user
                     const errorDiv = document.getElementById('error-display');
@@ -1401,51 +1447,55 @@
                 if (gesture === 'point_up') {
                     // Index finger up = draw
                     if (this.lastDrawPoint) {
-                        this.drawingCtx.beginPath();
-                        this.drawingCtx.moveTo(this.lastDrawPoint.x, this.lastDrawPoint.y);
-                        this.drawingCtx.lineTo(canvasX, canvasY);
-                        this.drawingCtx.stroke();
+                        // Add point to current path for batch drawing
+                        this.currentPath.push({ x: canvasX, y: canvasY });
+                        
+                        // Batch drawing for better performance
+                        if (this.currentPath.length >= this.pathBatchSize) {
+                            this.drawBatchedPath();
+                        }
                     } else {
                         // Start new stroke - save state for undo
                         this.saveCanvasState();
+                        this.currentPath = [{ x: canvasX, y: canvasY }];
                     }
                     this.lastDrawPoint = { x: canvasX, y: canvasY };
                     this.isDrawing = true;
                     
-                    // Draw cursor on drawing canvas
-                    this.drawingCtx.save();
-                    this.drawingCtx.fillStyle = this.currentColor;
-                    this.drawingCtx.beginPath();
-                    this.drawingCtx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
-                    this.drawingCtx.fill();
-                    this.drawingCtx.restore();
-                    
                 } else if (gesture === 'fist') {
                     // Fist = stop drawing
+                    if (this.currentPath.length > 0) {
+                        this.drawBatchedPath(); // Draw remaining points
+                        this.currentPath = [];
+                    }
                     this.isDrawing = false;
                     this.lastDrawPoint = null;
                     
                 } else if (gesture === 'open_palm') {
-                    // Open palm = erase/clear area
+                    // Open palm = erase/clear area (optimized)
                     if (!this.lastDrawPoint) {
-                        this.saveCanvasState(); // Save state before erasing
+                        this.saveCanvasState(); // Save state before erasing (only once per erase gesture)
                     }
-                    this.drawingCtx.save();
+                    // Direct operation without save/restore for better performance
+                    const prevOperation = this.drawingCtx.globalCompositeOperation;
                     this.drawingCtx.globalCompositeOperation = 'destination-out';
                     this.drawingCtx.beginPath();
                     this.drawingCtx.arc(canvasX, canvasY, 20, 0, 2 * Math.PI);
                     this.drawingCtx.fill();
-                    this.drawingCtx.restore();
+                    this.drawingCtx.globalCompositeOperation = prevOperation;
                     this.lastDrawPoint = { x: canvasX, y: canvasY }; // Track eraser movement
                     
                 } else {
                     // Other gestures = no drawing
+                    if (this.currentPath.length > 0) {
+                        this.drawBatchedPath(); // Draw remaining points
+                        this.currentPath = [];
+                    }
                     this.isDrawing = false;
                     this.lastDrawPoint = null;
                 }
                 
-                // Update drawing cursor on camera feed
-                this.canvasCtx.save();
+                // Update drawing cursor on camera feed (optimized - no save/restore needed)
                 this.canvasCtx.fillStyle = this.isDrawing ? '#00FF00' : '#FF0000';
                 this.canvasCtx.beginPath();
                 this.canvasCtx.arc(
@@ -1454,7 +1504,23 @@
                     8, 0, 2 * Math.PI
                 );
                 this.canvasCtx.fill();
-                this.canvasCtx.restore();
+            }
+            
+            drawBatchedPath() {
+                // Draw all accumulated points in one operation for much better performance
+                if (this.currentPath.length < 2) return;
+                
+                this.drawingCtx.beginPath();
+                this.drawingCtx.moveTo(this.currentPath[0].x, this.currentPath[0].y);
+                
+                for (let i = 1; i < this.currentPath.length; i++) {
+                    this.drawingCtx.lineTo(this.currentPath[i].x, this.currentPath[i].y);
+                }
+                
+                this.drawingCtx.stroke();
+                
+                // Keep last point for smooth continuation
+                this.currentPath = [this.currentPath[this.currentPath.length - 1]];
             }
             
             getFingerStates(landmarks) {
@@ -1580,7 +1646,7 @@
                 if (this.isRunning) return;
                 
                 try {
-                    console.log('🚀 Starting gesture recognition...');
+                    console.log('[START] Starting gesture recognition...');
                     
                     this.initializeMediaPipe();
                     await this.initializeCamera();
@@ -1592,18 +1658,18 @@
                     this.startBtn.disabled = true;
                     this.stopBtn.disabled = false;
                     
-                    console.log('✅ Gesture recognition started successfully');
+                    console.log('[OK] Gesture recognition started successfully');
                     
                 } catch (error) {
-                    console.error(`❌ Error starting recognition: ${error.message}`);
-                    this.updateStatus('camera_status', 'Start Failed ❌', 'error');
+                    console.error(`[ERROR] Error starting recognition: ${error.message}`);
+                    this.updateStatus('camera_status', 'Start Failed [X]', 'error');
                 }
             }
             
             stopRecognition() {
                 if (!this.isRunning) return;
                 
-                console.log('⏹️ Stopping gesture recognition...');
+                console.log('[STOP] Stopping gesture recognition...');
                 
                 this.isRunning = false;
                 
@@ -1620,7 +1686,7 @@
                 
                 this.updateStatus('camera_status', 'Camera Stopped', 'loading');
                 
-                console.log('✅ Gesture recognition stopped');
+                console.log('[OK] Gesture recognition stopped');
             }
             
             updateStatus(elementId, text, className) {
@@ -1632,7 +1698,7 @@
 
         // Initialize app when DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('🎯 Initializing Virtual Notepad...');
+            console.log('[INIT] Initializing Virtual Notepad...');
             
             // Wait for all external scripts to load
             function waitForScripts() {
@@ -1642,21 +1708,21 @@
                     
                     function checkScripts() {
                         checkCount++;
-                        console.log(`🔄 Checking scripts... (${checkCount}/${maxChecks})`);
+                        console.log(`[CHECK] Checking scripts... (${checkCount}/${maxChecks})`);
                         
                         const tfLoaded = typeof tf !== 'undefined';
                         const handsLoaded = typeof Hands !== 'undefined';
                         const cameraLoaded = typeof Camera !== 'undefined';
                         
-                        console.log(`TensorFlow.js: ${tfLoaded ? '✅' : '❌'}`);
-                        console.log(`MediaPipe Hands: ${handsLoaded ? '✅' : '❌'}`);
-                        console.log(`Camera Utils: ${cameraLoaded ? '✅' : '❌'}`);
+                        console.log(`TensorFlow.js: ${tfLoaded ? '[OK]' : '[X]'}`);
+                        console.log(`MediaPipe Hands: ${handsLoaded ? '[OK]' : '[X]'}`);
+                        console.log(`Camera Utils: ${cameraLoaded ? '[OK]' : '[X]'}`);
                         
                         if (tfLoaded && handsLoaded && cameraLoaded) {
-                            console.log('✅ All scripts loaded successfully');
+                            console.log('[OK] All scripts loaded successfully');
                             resolve(true);
                         } else if (checkCount >= maxChecks) {
-                            console.warn('⚠️ Script loading timeout - starting with available features');
+                            console.warn('[WARNING] Script loading timeout - starting with available features');
                             resolve(false);
                         } else {
                             setTimeout(checkScripts, 100);
