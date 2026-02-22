@@ -85,7 +85,7 @@
             overflow-x: hidden;
         }
         
-        /* Animated background */
+        /* Animated background - disabled for performance */
         body::before {
             content: '';
             position: fixed;
@@ -94,7 +94,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.03) 50%, transparent 70%);
-            animation: sweep 15s linear infinite;
+            /* animation: sweep 15s linear infinite; */ /* Disabled for better performance */
             pointer-events: none;
             z-index: 0;
         }
@@ -193,6 +193,7 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.4);
             background: #000;
             transition: all 0.3s ease;
+            will-change: transform; /* Performance hint for GPU acceleration */
         }
         
         video:hover, canvas:hover {
@@ -282,6 +283,12 @@
         .gesture-display.active::before {
             width: 200%;
             height: 200%;
+            animation: fadeOutEffect 0.3s ease-out forwards;
+        }
+        
+        @keyframes fadeOutEffect {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
         }
         
         .confidence-bar {
@@ -302,7 +309,7 @@
             right: 0;
             bottom: 0;
             background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
-            animation: shimmer 2s linear infinite;
+            /* animation: shimmer 2s linear infinite; */ /* Disabled for better performance */
         }
         
         @keyframes shimmer {
@@ -327,7 +334,7 @@
             right: 0;
             bottom: 0;
             background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
-            animation: slide 1.5s linear infinite;
+            /* animation: slide 1.5s linear infinite; */ /* Disabled for better performance */
         }
         
         @keyframes slide {
@@ -1172,6 +1179,12 @@
                 this.gestureStabilityFrames = 3;
                 this.lastStableGesture = 'unknown';
                 
+                // Performance optimizations
+                this.frameSkip = 0;
+                this.processEveryNthFrame = 2; // Process every 2nd frame for 50% less CPU
+                this.lastDOMUpdate = 0;
+                this.domUpdateInterval = 100; // Update DOM max every 100ms
+                
                 // Get DOM elements
                 this.inputVideo = document.getElementById('input_video');
                 this.outputCanvas = document.getElementById('output_canvas');
@@ -1360,8 +1373,8 @@
                                 }
                             }
                         },
-                        width: 640,
-                        height: 480
+                        width: 480,  // Reduced from 640 for better performance
+                        height: 360  // Reduced from 480 for better performance
                     });
                     
                     await this.camera.start();
@@ -1391,10 +1404,11 @@
                         }
                     });
                     
+                    // Optimized settings for better performance
                     this.hands.setOptions({
                         maxNumHands: 1,
-                        modelComplexity: 1,
-                        minDetectionConfidence: 0.7,
+                        modelComplexity: 0, // Use lighter model (was 1)
+                        minDetectionConfidence: 0.6, // Slightly lower for faster processing
                         minTrackingConfidence: 0.5
                     });
                     
@@ -1418,6 +1432,12 @@
             }
             
             onResults(results) {
+                // Frame skipping for better performance
+                this.frameSkip++;
+                if (this.frameSkip % this.processEveryNthFrame !== 0) {
+                    return; // Skip this frame
+                }
+                
                 this.updateFPS();
                 
                 // Clear and draw camera feed
@@ -1446,46 +1466,39 @@
             }
             
             drawLandmarks(landmarks) {
-                // Draw connections
+                // Optimized drawing - use single path and batch operations
+                const w = this.outputCanvas.width;
+                const h = this.outputCanvas.height;
+                
+                // Draw connections in one operation
                 const connections = [
                     [0, 1], [1, 2], [2, 3], [3, 4],  // Thumb
                     [0, 5], [5, 6], [6, 7], [7, 8],  // Index
-                    [0, 9], [9, 10], [10, 11], [11, 12],  // Middle
-                    [0, 13], [13, 14], [14, 15], [15, 16],  // Ring
-                    [0, 17], [17, 18], [18, 19], [19, 20],  // Pinky
-                    [5, 9], [9, 13], [13, 17]  // Palm
+                    [5, 9], [9, 10], [10, 11], [11, 12],  // Middle
+                    [9, 13], [13, 14], [14, 15], [15, 16],  // Ring
+                    [13, 17], [17, 18], [18, 19], [19, 20]  // Pinky
                 ];
                 
                 this.canvasCtx.strokeStyle = '#00FF00';
                 this.canvasCtx.lineWidth = 2;
                 this.canvasCtx.beginPath();
                 
-                connections.forEach(([start, end]) => {
-                    const startPoint = landmarks[start];
-                    const endPoint = landmarks[end];
-                    
-                    this.canvasCtx.moveTo(
-                        startPoint.x * this.outputCanvas.width,
-                        startPoint.y * this.outputCanvas.height
-                    );
-                    this.canvasCtx.lineTo(
-                        endPoint.x * this.outputCanvas.width,
-                        endPoint.y * this.outputCanvas.height
-                    );
-                });
+                for (const [start, end] of connections) {
+                    const sp = landmarks[start];
+                    const ep = landmarks[end];
+                    this.canvasCtx.moveTo(sp.x * w, sp.y * h);
+                    this.canvasCtx.lineTo(ep.x * w, ep.y * h);
+                }
                 
                 this.canvasCtx.stroke();
                 
-                // Draw points
+                // Draw only key points (less points = better performance)
                 this.canvasCtx.fillStyle = '#FF0000';
-                landmarks.forEach((landmark) => {
-                    const x = landmark.x * this.outputCanvas.width;
-                    const y = landmark.y * this.outputCanvas.height;
-                    
-                    this.canvasCtx.beginPath();
-                    this.canvasCtx.arc(x, y, 4, 0, 2 * Math.PI);
-                    this.canvasCtx.fill();
-                });
+                const keyPoints = [0, 4, 8, 12, 16, 20]; // Only fingertips and wrist
+                for (const i of keyPoints) {
+                    const lm = landmarks[i];
+                    this.canvasCtx.fillRect(lm.x * w - 3, lm.y * h - 3, 6, 6);
+                }
             }
             
             simulateGestureRecognition(landmarks) {
@@ -1679,6 +1692,13 @@
             }
             
             updateGestureDisplay(gesture, confidence) {
+                // Debounce DOM updates for better performance
+                const now = performance.now();
+                if (now - this.lastDOMUpdate < this.domUpdateInterval) {
+                    return; // Skip update if too soon
+                }
+                this.lastDOMUpdate = now;
+                
                 const gestureNames = {
                     'fist': 'FIST',
                     'open_palm': 'OPEN PALM',
@@ -1693,12 +1713,10 @@
                                    'Show your hand to the camera' : 
                                    gestureNames[gesture] || gesture.replace('_', ' ').toUpperCase();
                 
-                // Add animation class when gesture changes
+                // Add animation class when gesture changes (no setTimeout for better performance)
                 if (this.gestureDisplay.textContent !== displayText) {
                     this.gestureDisplay.classList.add('active');
-                    setTimeout(() => {
-                        this.gestureDisplay.classList.remove('active');
-                    }, 300);
+                    // Class will be removed automatically by CSS animation
                 }
                 
                 this.gestureDisplay.textContent = displayText;
