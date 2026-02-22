@@ -756,9 +756,108 @@
             transform: scale(1.1);
             box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
         }
+        
+        /* Navbar Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1001;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand:hover {
+            color: #667eea;
+        }
+        
+        .navbar-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .navbar-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .navbar-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        
+        .navbar-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .navbar-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        
+        .navbar-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Adjust body padding for navbar */
+        body > .container {
+            padding-top: 80px;
+        }
     </style>
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="../index.html" class="navbar-brand">
+            <div class="navbar-icon">📝</div>
+            <span>Virtual Notepad</span>
+        </a>
+        <div class="navbar-links">
+            <a href="../index.html" class="navbar-link">Home</a>
+            <a href="#" class="navbar-link" onclick="showInstructionGuide(); return false;">Instructions</a>
+            <button onclick="window.location.href='../index.html'" class="navbar-btn">Exit to Landing</button>
+        </div>
+    </nav>
     <!-- Instruction Guide Overlay -->
     <div id="instructionOverlay" class="instruction-overlay">
         <div class="instruction-modal">
