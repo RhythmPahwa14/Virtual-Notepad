@@ -14,6 +14,8 @@
   <link rel="prefetch" href="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands_solution_packed_assets_loader.js" as="script" crossorigin>
   <link rel="prefetch" href="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands_solution_simd_wasm_bin.js" as="script" crossorigin>
   <link rel="prefetch" href="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands_solution_simd_wasm_bin.wasm" as="fetch" crossorigin>
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.min.js" as="script">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" as="script">
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" as="script" crossorigin>
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.esm.js" as="script" crossorigin>
   <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" crossorigin>
@@ -168,10 +170,9 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","gsap":"https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.esm.js"}}</script>
-<script type="module">
-import * as THREE from 'three';
-import gsap from 'gsap';
+<script src="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script>
 
 //  CONSTANTS 
 const LM={WRIST:0,THUMB_CMC:1,THUMB_MCP:2,THUMB_IP:3,THUMB_TIP:4,INDEX_MCP:5,INDEX_PIP:6,INDEX_DIP:7,INDEX_TIP:8,MIDDLE_MCP:9,MIDDLE_PIP:10,MIDDLE_DIP:11,MIDDLE_TIP:12,RING_MCP:13,RING_PIP:14,RING_DIP:15,RING_TIP:16,PINKY_MCP:17,PINKY_PIP:18,PINKY_DIP:19,PINKY_TIP:20};
