@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Virtual Notepad – Gesture Drawing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="prefetch" href="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.binarypb" as="fetch" crossorigin>
+  <link rel="prefetch" href="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands_solution_packed_assets_loader.js" as="script" crossorigin>
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #08090f;
+      color: #fff;
+    }
+
+    /* ============ LANDING PAGE ============ */
+    #landing-page {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 100;
+      background: #08090f;
+      display: flex;
+      flex-direction: column;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    #landing-page.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* — Navbar — */
+    .vn-navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 68px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+
+    .vn-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .vn-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .vn-logo-text {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .vn-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .vn-nav-links a {
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .vn-nav-links a:hover {
+      color: #fff;
+    }
+
+    .vn-nav-cta {
+      padding: 10px 24px;
+      background: #fff;
+      color: #08090f;
+      border: none;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .vn-nav-cta:hover {
+      background: rgba(255,255,255,0.9);
+      transform: translateY(-1px);
+    }
+
+    /* — Hero — */
+    .vn-hero {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 0 40px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Waveform canvas (left side decoration) */
+    .vn-wave-container {
+      flex: 0 0 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    #wave-canvas {
+      width: 100%;
+      max-width: 560px;
+      height: 340px;
+    }
+
+    /* Right side content */
+    .vn-hero-content {
+      flex: 0 0 50%;
+      padding-left: 40px;
+    }
+
+    .vn-hero-title {
+      font-size: clamp(52px, 7vw, 96px);
+      font-weight: 900;
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .vn-hero-sub {
+      font-size: 16px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.7;
+      max-width: 380px;
+      margin-bottom: 40px;
+    }
+
+    .vn-hero-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .vn-btn-primary {
+      padding: 16px 36px;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 0 40px rgba(99, 102, 241, 0.4);
+    }
+
+    .vn-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 60px rgba(99, 102, 241, 0.6);
+    }
+
+    .vn-btn-secondary {
+      padding: 16px 36px;
+      background: transparent;
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .vn-btn-secondary:hover {
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* Subtle grid overlay on landing */
+    .vn-grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* Bottom strip */
+    .vn-bottom-strip {
+      padding: 16px 40px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .vn-tagline {
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .vn-tech-badges {
+      display: flex;
+      gap: 12px;
+    }
+
+    .vn-badge {
+      font-size: 10px;
+      color: rgba(255,255,255,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      padding: 4px 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* ============ APP CANVAS AREA ============ */
+    #app {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0; left: 0;
+      background: #08090f;
+    }
+
+    #webcam {
+      display: none;
+    }
+
+    #scene-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+    }
+
+    #draw-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    #hand-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    #ui-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    #ui-overlay > * {
+      pointer-events: auto;
+    }
+
+    /* — App Navbar — */
+    .app-navbar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: rgba(8, 9, 15, 0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      z-index: 11;
+    }
+
+    .app-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .app-logo-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .app-logo-text {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .app-nav-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50px;
+      color: rgba(255,255,255,0.8);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+    }
+
+    .action-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: rgba(99, 102, 241, 0.4);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .action-btn .icon {
+      font-size: 14px;
+    }
+
+    /* — Camera preview — */
+    #camera-preview {
+      position: absolute;
+      top: 76px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      height: 210px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.1);
+      z-index: 10;
+      background: #000;
+      cursor: grab;
+      user-select: none;
+    }
+
+    #camera-preview.dragging {
+      cursor: grabbing;
+      opacity: 0.9;
+      transition: none;
+    }
+
+    #camera-preview:not(.dragging) {
+      transition: box-shadow 0.2s ease;
+    }
+
+    #camera-preview.custom-position {
+      transform: none;
+    }
+
+    #camera-preview.expanded {
+      width: 560px;
+      height: 420px;
+    }
+
+    #camera-preview video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    #camera-preview canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    .preview-expand-btn {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 26px; height: 26px;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(99,102,241,0.4);
+      border-radius: 6px;
+      color: #6366f1;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      z-index: 11;
+    }
+
+    .preview-expand-btn:hover {
+      background: rgba(99,102,241,0.2);
+      border-color: rgba(99,102,241,0.6);
+    }
+
+    #camera-preview.expanded .preview-expand-btn {
+      transform: rotate(180deg);
+    }
+
+    /* — Color Palette — */
+    #color-palette {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 8px;
+      background: rgba(8,9,15,0.75);
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .color-swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.2);
+    }
+
+    .color-swatch.active {
+      border-color: #6366f1;
+      box-shadow: 0 0 14px rgba(99,102,241,0.55);
+    }
+
+    /* — Gesture Hints — */
+    .gesture-hints {
+      position: absolute;
+      bottom: 24px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      opacity: 0.75;
+    }
+
+    .gesture-hint {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: rgba(255,255,255,0.65);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+    }
+
+    .gesture-icon {
+      width: 24px;
+      height: 24px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    /* — Controls info — */
+    .controls-info {
+      position: absolute;
+      bottom: 24px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: right;
+      color: rgba(255,255,255,0.3);
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* — Status message — */
+    #status-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(255,255,255,0.9);
+      font-size: 22px;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      text-shadow: 0 0 30px rgba(99,102,241,0.4);
+      pointer-events: none;
+    }
+
+    #status-message.visible {
+      opacity: 1;
+    }
+
+    /* — Decorative — */
+    .decorative-text {
+      position: absolute;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 64px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.025);
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.03em;
+    }
+
+    /* — Invite Modal — */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: #0f1018;
+      border: 1px solid rgba(99,102,241,0.25);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+      transform: scale(0.92);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.visible .modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .modal-title {
+      color: #fff;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: rgba(255,255,255,0.07);
+      border-radius: 50%;
+      color: rgba(255,255,255,0.7);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+    }
+
+    .modal-body {
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .room-code-section { margin: 20px 0; }
+
+    .room-code-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .room-code-display {
+      display: flex;
+      gap: 10px;
+    }
+
+    .room-code {
+      flex: 1;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-align: center;
+    }
+
+    .copy-btn {
+      padding: 14px 18px;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 12px;
+      color: #6366f1;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: rgba(99,102,241,0.25);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 22px 0;
+      color: rgba(255,255,255,0.25);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .divider span { padding: 0 14px; }
+
+    .join-section input {
+      width: 100%;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .join-section input::placeholder {
+      color: rgba(255,255,255,0.2);
+      text-transform: none;
+      letter-spacing: normal;
+    }
+
+    .join-section input:focus {
+      outline: none;
+      border-color: rgba(99,102,241,0.5);
+    }
+
+    .join-btn {
+      width: 100%;
+      padding: 14px;
+      background: rgba(99,102,241,0.2);
+      border: 1px solid rgba(99,102,241,0.35);
+      border-radius: 12px;
+      color: #a5b4fc;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.04em;
+    }
+
+    .join-btn:hover {
+      background: rgba(99,102,241,0.3);
+      color: #fff;
+    }
+
+    .connection-status {
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #444;
+      flex-shrink: 0;
+    }
+
+    .status-dot.connected {
+      background: #4ade80;
+      box-shadow: 0 0 10px rgba(74,222,128,0.5);
+    }
+
+    .status-dot.connecting {
+      background: #fbbf24;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* — Loading overlay — */
+    #loading-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #08090f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 150;
+      transition: opacity 0.5s ease;
+    }
+
+    #loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-spinner {
+      width: 48px;
+      height: 48px;
+      border: 2px solid rgba(99,102,241,0.2);
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      color: rgba(255,255,255,0.5);
+      margin-top: 20px;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 900px) {
+      .vn-wave-container { flex: 0 0 45%; }
+      .vn-hero-content { flex: 0 0 55%; }
+      .vn-nav-links { gap: 24px; }
+    }
+
+    @media (max-width: 700px) {
+      .vn-navbar { padding: 0 20px; }
+      .vn-nav-links { display: none; }
+      .vn-hero { flex-direction: column; padding: 20px 20px 20px; align-items: flex-start; }
+      .vn-wave-container { display: none; }
+      .vn-hero-content { flex: none; padding-left: 0; }
+      .vn-hero-title { font-size: 52px; }
+      #camera-preview { width: 200px; height: 150px; }
+      #camera-preview.expanded { width: 400px; height: 300px; }
+      .decorative-text { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .vn-hero-title { font-size: 42px; }
+      .vn-hero-sub { font-size: 14px; }
+      .vn-hero-actions { flex-direction: column; align-items: flex-start; }
+      .vn-btn-primary, .vn-btn-secondary { padding: 14px 28px; }
+      #camera-preview { width: 160px; height: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== LANDING PAGE ========== -->
+  <div id="landing-page">
+    <div class="vn-grid-overlay"></div>
+
+    <!-- Navbar -->
+    <nav class="vn-navbar">
+      <a class="vn-logo" href="#">
+        <div class="vn-logo-icon">✦</div>
+        <span class="vn-logo-text">Virtual Notepad</span>
+      </a>
+
+      <ul class="vn-nav-links">
+        <li><a href="#">Spatial</a></li>
+        <li><a href="#">Canvas</a></li>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Features</a></li>
+      </ul>
+
+      <button class="vn-nav-cta" id="nav-get-started">Get Started</button>
+    </nav>
+
+    <!-- Hero -->
+    <div class="vn-hero">
+      <div class="vn-wave-container">
+        <canvas id="wave-canvas"></canvas>
+      </div>
+
+      <div class="vn-hero-content">
+        <h1 class="vn-hero-title">Virtual<br>Notepad</h1>
+        <p class="vn-hero-sub">
+          Experience zero-latency digital ink in three-dimensional space.
+          The boundary between physical and digital thought has vanished.
+        </p>
+        <div class="vn-hero-actions">
+          <button class="vn-btn-primary" id="start-creating-btn">Start Creating</button>
+          <button class="vn-btn-secondary" id="watch-demo-btn">Watch Demo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom strip -->
+    <div class="vn-bottom-strip">
+      <span class="vn-tagline">Gesture-powered · Browser native · No install</span>
+      <div class="vn-tech-badges">
+        <span class="vn-badge">Three.js</span>
+        <span class="vn-badge">MediaPipe</span>
+        <span class="vn-badge">WebRTC</span>
+        <span class="vn-badge">GSAP</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== APP CANVAS AREA ========== -->
+  <div id="app">
+    <video id="webcam" playsinline></video>
+    <canvas id="scene-canvas"></canvas>
+    <canvas id="draw-canvas"></canvas>
+    <canvas id="hand-canvas"></canvas>
+
+    <!-- Camera preview -->
+    <div id="camera-preview">
+      <video id="preview-video" playsinline muted></video>
+      <canvas id="preview-canvas"></canvas>
+      <button class="preview-expand-btn" id="preview-expand-btn" title="Expand preview">⤢</button>
+    </div>
+
+    <!-- UI overlay -->
+    <div id="ui-overlay">
+
+      <!-- App navbar -->
+      <div class="app-navbar">
+        <div class="app-logo">
+          <div class="app-logo-icon">✦</div>
+          <span class="app-logo-text">Virtual Notepad</span>
+        </div>
+        <div class="app-nav-right">
+          <button class="action-btn" id="clear-all-btn">
+            <span class="icon">🗑️</span>
+            <span class="btn-text">Clear All</span>
+          </button>
+          <button class="action-btn" id="invite-btn">
+            <span class="icon">👥</span>
+            <span class="btn-text">Invite Friend</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Color palette -->
+      <div id="color-palette">
+        <div class="color-swatch active" data-color="#FFB3BA" style="background:#FFB3BA;"></div>
+        <div class="color-swatch" data-color="#FFFFBA" style="background:#FFFFBA;"></div>
+        <div class="color-swatch" data-color="#BAFFC9" style="background:#BAFFC9;"></div>
+        <div class="color-swatch" data-color="#BAE1FF" style="background:#BAE1FF;"></div>
+        <div class="color-swatch" data-color="#E8BAFF" style="background:#E8BAFF;"></div>
+        <div class="color-swatch" data-color="#FFD4A3" style="background:#FFD4A3;"></div>
+        <div class="color-swatch" data-color="#A3FFD4" style="background:#A3FFD4;"></div>
+        <div class="color-swatch" data-color="#D4A3FF" style="background:#D4A3FF;"></div>
+        <div class="color-swatch" data-color="#FFFFFF" style="background:#FFFFFF;"></div>
+        <div class="color-swatch" data-color="#6366f1" style="background:#6366f1;"></div>
+      </div>
+
+      <!-- Gesture hints -->
+      <div class="gesture-hints">
+        <div class="gesture-hint">
+          <div class="gesture-icon">☝️</div>
+          <span>Point to draw</span>
+        </div>
+        <div class="gesture-hint">
+          <div class="gesture-icon">🤏</div>
+          <span>Pinch to grab</span>
+        </div>
+        <div class="gesture-hint">
+          <div class="gesture-icon">🖐️</div>
+          <span>Palm to inflate</span>
+        </div>
+      </div>
+
+      <div class="controls-info">
+        <span>Scroll to zoom</span>
+        <span>Drag to orbit</span>
+        <span>Click object to select</span>
+      </div>
+
+      <div id="status-message"></div>
+
+      <div class="decorative-text">create with your hands</div>
+    </div>
+  </div>
+
+  <!-- Invite modal -->
+  <div class="modal-overlay" id="invite-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Invite Friend</h2>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Share this room code with a friend to draw together in real-time!</p>
+        <div class="room-code-section">
+          <div class="room-code-label">Your Room Code</div>
+          <div class="room-code-display">
+            <div class="room-code" id="room-code">------</div>
+            <button class="copy-btn" id="copy-code-btn" title="Copy to clipboard">📋</button>
+          </div>
+        </div>
+        <div class="divider"><span>or join a friend</span></div>
+        <div class="join-section">
+          <input type="text" id="join-code-input" placeholder="Enter room code" maxlength="6">
+          <button class="join-btn" id="join-room-btn">Join Room</button>
+        </div>
+        <div class="connection-status" id="connection-status">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Not connected</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading overlay (shown while hand tracking initialises) -->
+  <div id="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Initializing hand tracking…</div>
+  </div>
+
+  <!-- External libraries (CDN) -->
+  <!-- MediaPipe Hands (global) -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <!-- PeerJS (global) -->
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+  <!-- Import map for ES modules -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+      "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.esm.js"
+    }
+  }
+  </script>
+
+  <!-- Landing page waveform animation -->
+  <script>
+    (function () {
+      const canvas = document.getElementById('wave-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+      }
+      resize();
+
+      let t = 0;
+      const NUM_WAVES = 18;
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const W = canvas.width;
+        const H = canvas.height;
+        const cx = W * 0.45;
+        const cy = H / 2;
+
+        for (let w = 0; w < NUM_WAVES; w++) {
+          const phase = (w / NUM_WAVES) * Math.PI * 2;
+          const amp = 20 + Math.sin(t * 0.5 + phase) * 60 + w * 4;
+          const freq = 0.012 + w * 0.0008;
+          const alpha = 0.08 + (1 - w / NUM_WAVES) * 0.18;
+          const hue = 240 + w * 4;
+
+          ctx.beginPath();
+          ctx.moveTo(0, cy);
+
+          for (let x = 0; x <= W; x += 3) {
+            const y = cy + Math.sin(x * freq + t * 1.2 + phase) * amp
+              + Math.sin(x * freq * 2.3 + t * 0.7 + phase * 1.5) * (amp * 0.3);
+            ctx.lineTo(x, y);
+          }
+
+          ctx.strokeStyle = `hsla(${hue}, 70%, 70%, ${alpha})`;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        t += 0.02;
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+      window.addEventListener('resize', resize);
+    })();
+  </script>
+
+  <!-- Landing page interaction -->
+  <script>
+    const landingPage = document.getElementById('landing-page');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    // Initially hide the loading overlay (it shows when app starts)
+    loadingOverlay.style.display = 'none';
+
+    function launchApp() {
+      landingPage.classList.add('hidden');
+      loadingOverlay.style.display = 'flex';
+      // Dynamically import the main module AFTER landing page dismissed
+      import('./js/air-canvas/main.js').catch(err => {
+        console.error('Failed to load app:', err);
+        loadingOverlay.innerHTML = '<div style="color:rgba(255,255,255,0.5);text-align:center;padding:20px;">Failed to load. Check console for errors.</div>';
+      });
+    }
+
+    document.getElementById('start-creating-btn').addEventListener('click', launchApp);
+    document.getElementById('nav-get-started').addEventListener('click', launchApp);
+
+    // Watch Demo — just launch for now
+    document.getElementById('watch-demo-btn').addEventListener('click', launchApp);
+  </script>
+
+</body>
+</html>
