@@ -1,0 +1,782 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Notepad - Gesture Recognition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            scroll-behavior: smooth;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.7; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50%       { transform: translateY(-5px); }
+        }
+        @keyframes shimmer {
+            0%   { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        @keyframes slide {
+            0%   { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        @keyframes sweep {
+            0%   { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100vw)  translateY(100vh)  rotate(45deg); }
+        }
+        @keyframes spin {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 300;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.03) 50%, transparent 70%);
+            animation: sweep 15s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: -0.5px;
+            color: white;
+            animation: float 6s ease-in-out infinite;
+        }
+        .header p {
+            font-size: 1.2em;
+            font-weight: 300;
+            opacity: 0.9;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            animation: fadeInScale 0.8s ease-out 0.3s both;
+        }
+
+        .video-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .video-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+        .video-section:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.3); }
+        .video-section:hover::before { left: 100%; }
+        .video-section h3 { font-size: 1.5em; font-weight: 600; margin-bottom: 15px; text-align: center; }
+
+        video, canvas {
+            width: 100%;
+            max-width: 500px;
+            height: 375px;
+            border-radius: 15px;
+            border: 3px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            background: #000;
+            transition: all 0.3s ease;
+        }
+        video:hover, canvas:hover { border-color: rgba(255,255,255,0.5); box-shadow: 0 12px 35px rgba(0,0,0,0.5); }
+
+        /* Panels appear immediately — no delay */
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: fadeInScale 0.5s ease-out;
+        }
+
+        .info-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .info-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.3); }
+        .info-card:hover::before { transform: translateX(0); }
+        .info-card h3 { font-size: 1.3em; font-weight: 600; margin-bottom: 15px; }
+
+        .gesture-display {
+            font-size: 2em;
+            font-weight: 600;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .gesture-display::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+        }
+        .gesture-display.active::before { width: 200%; height: 200%; }
+
+        .confidence-bar {
+            width: 100%; height: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+        }
+        .confidence-bar::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+            animation: shimmer 2s linear infinite;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .confidence-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+            animation: slide 1.5s linear infinite;
+        }
+
+        .status {
+            padding: 8px 15px;
+            margin: 5px 0;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 400;
+        }
+        .status.loading { background: rgba(23, 162, 184, 0.8); }
+        .status.ready   { background: rgba(40, 167, 69, 0.8); }
+        .status.error   { background: rgba(220, 53, 69, 0.8); }
+        .status.warning { background: rgba(255, 193, 7, 0.8); color: #000; }
+
+        .fps-display { font-family: 'Poppins', monospace; font-weight: 300; font-size: 0.9em; margin-top: 10px; }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+            z-index: -1;
+        }
+        .btn:hover::before { left: 100%; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .btn:active { transform: translateY(0); transition: transform 0.1s; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+        .btn-primary { background: linear-gradient(45deg, #28a745, #20c997); color: white; }
+        .btn-danger   { background: linear-gradient(45deg, #dc3545, #fd7e14); color: white; }
+        .btn-warning  { background: linear-gradient(45deg, #ffc107, #fd7e14); color: white; }
+        .btn-success  { background: linear-gradient(45deg, #28a745, #20c997); color: white; }
+
+        .gesture-guide { text-align: left; line-height: 1.8; font-weight: 300; }
+        .gesture-guide div { margin: 8px 0; padding: 5px 10px; background: rgba(255,255,255,0.1); border-radius: 8px; }
+        .gesture-guide strong { font-weight: 600; }
+
+        .color-btn {
+            width: 30px; height: 30px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative; overflow: hidden;
+        }
+        .color-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+        .color-btn:hover { transform: scale(1.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .color-btn:hover::before { width: 100%; height: 100%; }
+        .color-btn.active { border-width: 3px; transform: scale(1.1); animation: pulse 2s infinite; }
+
+        @media (max-width: 768px) {
+            .main-content  { grid-template-columns: 1fr; }
+            .info-panel    { grid-template-columns: 1fr; }
+            .controls      { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <div id="error-display" style="display:none;background:#dc3545;color:#fff;padding:15px;margin:15px 0;border-radius:8px;font-size:1.1em;animation:fadeInUp 0.5s ease-out;"></div>
+
+    <!-- Loading overlay — hidden almost immediately after DOM ready -->
+    <div id="loading-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(102,126,234,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.4s ease;">
+        <div style="text-align:center;">
+            <div style="width:50px;height:50px;border:3px solid rgba(255,255,255,0.3);border-top:3px solid white;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px;"></div>
+            <h2 style="font-family:'Poppins',sans-serif;font-weight:600;margin:0;">✋ Virtual Notepad</h2>
+            <p style="font-family:'Poppins',sans-serif;font-weight:300;margin:10px 0 0;opacity:0.8;">Starting up…</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>✋ Virtual Notepad</h1>
+            <p>🤖 AI-Powered Hand Gesture Recognition</p>
+        </div>
+
+        <div class="main-content">
+            <div class="video-section">
+                <h3>📷 Camera Feed</h3>
+                <video id="input_video" autoplay muted playsinline style="display:none;"></video>
+                <canvas id="output_canvas"></canvas>
+            </div>
+            <div class="video-section">
+                <h3>🎨 Drawing Canvas</h3>
+                <canvas id="drawing_canvas" style="background:white;cursor:crosshair;"></canvas>
+                <div style="margin-top:10px;text-align:center;">
+                    <div style="margin-bottom:10px;">
+                        <span style="margin-right:10px;font-weight:600;">🎨 Colors:</span>
+                        <button class="color-btn" data-color="#2196F3" style="background:#2196F3;"></button>
+                        <button class="color-btn" data-color="#FF0000" style="background:#FF0000;"></button>
+                        <button class="color-btn" data-color="#00FF00" style="background:#00FF00;"></button>
+                        <button class="color-btn" data-color="#FFA500" style="background:#FFA500;"></button>
+                        <button class="color-btn" data-color="#800080" style="background:#800080;"></button>
+                        <button class="color-btn" data-color="#000000" style="background:#000000;"></button>
+                    </div>
+                    <button id="undo_btn" class="btn btn-warning" style="padding:8px 16px;font-size:14px;margin:2px;">↩️ Undo</button>
+                    <button id="clear_btn" class="btn btn-danger"  style="padding:8px 16px;font-size:14px;margin:2px;">🗑️ Clear</button>
+                    <button id="save_btn"  class="btn btn-success" style="padding:8px 16px;font-size:14px;margin:2px;">💾 Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-card">
+                <h3>🤚 Detected Gesture</h3>
+                <div id="gesture_display" class="gesture-display">Ready…</div>
+                <div class="confidence-bar">
+                    <div id="confidence_fill" class="confidence-fill"></div>
+                </div>
+                <div id="confidence_text">Confidence: 0%</div>
+            </div>
+
+            <div class="info-card">
+                <h3>⚙️ System Status</h3>
+                <div id="model_status"  class="status loading">⏳ Loading Model…</div>
+                <div id="camera_status" class="status loading">📷 Initializing Camera…</div>
+                <div id="fps_display"   class="fps-display">📊 FPS: --</div>
+            </div>
+
+            <div class="info-card">
+                <h3>✏️ Drawing Controls</h3>
+                <div class="gesture-guide">
+                    <div>👆 <strong>Point Up</strong> — Draw / Write</div>
+                    <div>✊ <strong>Fist</strong> — Stop Drawing</div>
+                    <div>🖐️ <strong>Open Palm</strong> — Erase</div>
+                    <div>✌️ <strong>Peace</strong> — Navigation</div>
+                    <div>🤘 <strong>Rock</strong> — Special Action</div>
+                    <div>👍 <strong>Thumbs Up</strong> — Confirm</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="start_btn" class="btn btn-primary">🚀 Start Recognition</button>
+            <button id="stop_btn"  class="btn btn-danger" disabled>🛑 Stop Recognition</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1640029074/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1640029074/drawing_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.js"></script>
+
+    <script>
+        // Global error handler
+        window.addEventListener('error', function(e) {
+            var el = document.getElementById('error-display');
+            el.style.display = 'block';
+            el.innerHTML = '<strong>JavaScript Error:</strong> ' + e.message + '<br><small>at ' + e.filename + ':' + e.lineno + '</small>';
+        });
+        window.addEventListener('unhandledrejection', function(e) {
+            var el = document.getElementById('error-display');
+            el.style.display = 'block';
+            el.innerHTML = '<strong>Unhandled Promise Rejection:</strong> ' + e.reason;
+        });
+
+        class VirtualNotepadApp {
+            constructor() {
+                this.model = null;
+                this.hands = null;
+                this.camera = null;
+                this.isRunning = false;
+                this.gestureClasses = ['fist', 'open_palm', 'peace', 'rock', 'thumbs_up'];
+                this.frameCount = 0;
+                this.lastTime = performance.now();
+
+                this.isDrawing = false;
+                this.lastDrawPoint = null;
+                this.currentColor = '#2196F3';
+                this.drawingHistory = [];
+                this.maxHistorySteps = 20;
+
+                this.gestureHistory = [];
+                this.gestureStabilityFrames = 3;
+                this.lastStableGesture = 'unknown';
+
+                this.inputVideo    = document.getElementById('input_video');
+                this.outputCanvas  = document.getElementById('output_canvas');
+                this.canvasCtx     = this.outputCanvas.getContext('2d');
+                this.drawingCanvas = document.getElementById('drawing_canvas');
+                this.drawingCtx    = this.drawingCanvas.getContext('2d');
+                this.gestureDisplay  = document.getElementById('gesture_display');
+                this.confidenceFill  = document.getElementById('confidence_fill');
+                this.confidenceText  = document.getElementById('confidence_text');
+                this.modelStatus   = document.getElementById('model_status');
+                this.cameraStatus  = document.getElementById('camera_status');
+                this.fpsDisplay    = document.getElementById('fps_display');
+                this.startBtn      = document.getElementById('start_btn');
+                this.stopBtn       = document.getElementById('stop_btn');
+                this.clearBtn      = document.getElementById('clear_btn');
+                this.undoBtn       = document.getElementById('undo_btn');
+                this.saveBtn       = document.getElementById('save_btn');
+                this.colorBtns     = document.querySelectorAll('.color-btn');
+
+                this.initializeEventListeners();
+                this.setupDrawingCanvas();
+                this.loadModel();
+            }
+
+            initializeEventListeners() {
+                this.startBtn.addEventListener('click', () => this.startRecognition());
+                this.stopBtn.addEventListener('click',  () => this.stopRecognition());
+                this.clearBtn.addEventListener('click', () => this.clearDrawing());
+                this.undoBtn.addEventListener('click',  () => this.undoLastAction());
+                this.saveBtn.addEventListener('click',  () => this.saveDrawing());
+                this.colorBtns.forEach(btn => btn.addEventListener('click', e => this.selectColor(e.target.dataset.color)));
+                this.colorBtns[0].classList.add('active');
+            }
+
+            setupDrawingCanvas() {
+                this.drawingCanvas.width  = 640;
+                this.drawingCanvas.height = 480;
+                this.drawingCtx.lineWidth   = 3;
+                this.drawingCtx.lineCap     = 'round';
+                this.drawingCtx.lineJoin    = 'round';
+                this.drawingCtx.strokeStyle = this.currentColor;
+                this.drawingCtx.fillStyle   = 'white';
+                this.drawingCtx.fillRect(0, 0, 640, 480);
+                this.saveCanvasState();
+            }
+
+            saveCanvasState() {
+                const img = this.drawingCtx.getImageData(0, 0, this.drawingCanvas.width, this.drawingCanvas.height);
+                this.drawingHistory.push(img);
+                if (this.drawingHistory.length > this.maxHistorySteps) this.drawingHistory.shift();
+            }
+
+            selectColor(color) {
+                this.currentColor = color;
+                this.drawingCtx.strokeStyle = color;
+                this.colorBtns.forEach(b => b.classList.remove('active'));
+                const active = document.querySelector('[data-color="' + color + '"]');
+                if (active) active.classList.add('active');
+            }
+
+            undoLastAction() {
+                if (this.drawingHistory.length > 1) {
+                    this.drawingHistory.pop();
+                    this.drawingCtx.putImageData(this.drawingHistory[this.drawingHistory.length - 1], 0, 0);
+                }
+            }
+
+            saveDrawing() {
+                const link = document.createElement('a');
+                link.download = 'virtual-notepad-' + Date.now() + '.png';
+                link.href = this.drawingCanvas.toDataURL();
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            clearDrawing() {
+                this.drawingCtx.fillStyle = 'white';
+                this.drawingCtx.fillRect(0, 0, this.drawingCanvas.width, this.drawingCanvas.height);
+                this.saveCanvasState();
+            }
+
+            async loadModel() {
+                try {
+                    this.updateStatus('model_status', '⏳ Loading AI Model…', 'loading');
+                    try {
+                        this.model = await tf.loadLayersModel('./models/model.json');
+                        this.updateStatus('model_status', '✅ AI Model Ready', 'ready');
+                    } catch (_) {
+                        this.updateStatus('model_status', '✅ Rule-based Recognition', 'ready');
+                    }
+                    this.startBtn.disabled = false;
+                } catch (error) {
+                    this.updateStatus('model_status', '✅ Rule-based Recognition', 'ready');
+                    this.startBtn.disabled = false;
+                }
+            }
+
+            async initializeCamera() {
+                try {
+                    this.updateStatus('camera_status', '📷 Starting Camera…', 'loading');
+                    if (typeof Camera === 'undefined') throw new Error('Camera utility not loaded');
+                    this.camera = new Camera(this.inputVideo, {
+                        onFrame: async () => {
+                            if (this.hands && this.isRunning) {
+                                try { await this.hands.send({image: this.inputVideo}); }
+                                catch (e) { console.warn('Frame error:', e.message); }
+                            }
+                        },
+                        width: 640, height: 480
+                    });
+                    await this.camera.start();
+                    this.updateStatus('camera_status', '✅ Camera Active', 'ready');
+                } catch (error) {
+                    this.updateStatus('camera_status', '⚠️ Camera Failed — Manual Mode', 'warning');
+                    const el = document.getElementById('error-display');
+                    if (el) { el.style.display = 'block'; el.innerHTML = '<strong>Camera Error:</strong> ' + error.message; }
+                }
+            }
+
+            initializeMediaPipe() {
+                try {
+                    this.hands = new Hands({
+                        locateFile: f => 'https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/' + f
+                    });
+                    this.hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7, minTrackingConfidence: 0.5 });
+                    this.hands.onResults(r => this.onResults(r));
+                } catch (error) {
+                    this.updateStatus('camera_status', '⚠️ Using Manual Controls Only', 'warning');
+                }
+            }
+
+            onResults(results) {
+                this.updateFPS();
+                this.canvasCtx.save();
+                this.canvasCtx.clearRect(0, 0, this.outputCanvas.width, this.outputCanvas.height);
+                this.canvasCtx.drawImage(results.image, 0, 0, this.outputCanvas.width, this.outputCanvas.height);
+                if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                    const lms = results.multiHandLandmarks[0];
+                    this.drawLandmarks(lms);
+                    const raw    = this.simulateGestureRecognition(lms);
+                    const stable = this.stabilizeGesture(raw);
+                    this.handleDrawing(lms, stable);
+                } else {
+                    this.updateGestureDisplay('No hand detected', 0);
+                    this.isDrawing = false;
+                    this.lastDrawPoint = null;
+                }
+                this.canvasCtx.restore();
+            }
+
+            drawLandmarks(landmarks) {
+                const connections = [
+                    [0,1],[1,2],[2,3],[3,4],
+                    [0,5],[5,6],[6,7],[7,8],
+                    [0,9],[9,10],[10,11],[11,12],
+                    [0,13],[13,14],[14,15],[15,16],
+                    [0,17],[17,18],[18,19],[19,20],
+                    [5,9],[9,13],[13,17]
+                ];
+                this.canvasCtx.strokeStyle = '#00FF00';
+                this.canvasCtx.lineWidth = 2;
+                this.canvasCtx.beginPath();
+                connections.forEach(([s, e]) => {
+                    const a = landmarks[s], b = landmarks[e];
+                    this.canvasCtx.moveTo(a.x * this.outputCanvas.width, a.y * this.outputCanvas.height);
+                    this.canvasCtx.lineTo(b.x * this.outputCanvas.width, b.y * this.outputCanvas.height);
+                });
+                this.canvasCtx.stroke();
+                this.canvasCtx.fillStyle = '#FF0000';
+                landmarks.forEach(lm => {
+                    this.canvasCtx.beginPath();
+                    this.canvasCtx.arc(lm.x * this.outputCanvas.width, lm.y * this.outputCanvas.height, 4, 0, 2 * Math.PI);
+                    this.canvasCtx.fill();
+                });
+            }
+
+            simulateGestureRecognition(landmarks) {
+                const [thumbUp, indexUp, middleUp, ringUp, pinkyUp] = this.getFingerStates(landmarks);
+                const extended = [thumbUp, indexUp, middleUp, ringUp, pinkyUp].filter(Boolean).length;
+                let gesture = 'unknown', confidence = 0.85;
+                if      (extended === 0)                                              { gesture = 'fist';      confidence = 0.95; }
+                else if (extended === 5)                                              { gesture = 'open_palm'; confidence = 0.95; }
+                else if (indexUp && !middleUp && !ringUp && !pinkyUp)                { gesture = 'point_up';  confidence = 0.90; }
+                else if (indexUp &&  middleUp && !ringUp && !pinkyUp)                { gesture = 'peace';     confidence = 0.90; }
+                else if (thumbUp && !indexUp  && !middleUp && !ringUp && !pinkyUp)   { gesture = 'thumbs_up'; confidence = 0.90; }
+                else if (indexUp && !middleUp && !ringUp  &&  pinkyUp)              { gesture = 'rock';      confidence = 0.88; }
+                else if (extended >= 3)                                               { gesture = 'open_palm'; confidence = 0.75; }
+                else                                                                  { gesture = 'unknown';   confidence = 0.60; }
+                this.updateGestureDisplay(gesture, confidence);
+                return gesture;
+            }
+
+            handleDrawing(landmarks, gesture) {
+                const tip = landmarks[8];
+                const cx = (1 - tip.x) * this.drawingCanvas.width;
+                const cy = tip.y        * this.drawingCanvas.height;
+                if (gesture === 'point_up') {
+                    if (this.lastDrawPoint) {
+                        this.drawingCtx.beginPath();
+                        this.drawingCtx.moveTo(this.lastDrawPoint.x, this.lastDrawPoint.y);
+                        this.drawingCtx.lineTo(cx, cy);
+                        this.drawingCtx.stroke();
+                    } else {
+                        this.saveCanvasState();
+                    }
+                    this.lastDrawPoint = {x: cx, y: cy};
+                    this.isDrawing = true;
+                    this.drawingCtx.save();
+                    this.drawingCtx.fillStyle = this.currentColor;
+                    this.drawingCtx.beginPath();
+                    this.drawingCtx.arc(cx, cy, 5, 0, 2 * Math.PI);
+                    this.drawingCtx.fill();
+                    this.drawingCtx.restore();
+                } else if (gesture === 'fist') {
+                    this.isDrawing = false;
+                    this.lastDrawPoint = null;
+                } else if (gesture === 'open_palm') {
+                    if (!this.lastDrawPoint) this.saveCanvasState();
+                    this.drawingCtx.save();
+                    this.drawingCtx.globalCompositeOperation = 'destination-out';
+                    this.drawingCtx.beginPath();
+                    this.drawingCtx.arc(cx, cy, 20, 0, 2 * Math.PI);
+                    this.drawingCtx.fill();
+                    this.drawingCtx.restore();
+                    this.lastDrawPoint = {x: cx, y: cy};
+                } else {
+                    this.isDrawing = false;
+                    this.lastDrawPoint = null;
+                }
+                this.canvasCtx.save();
+                this.canvasCtx.fillStyle = this.isDrawing ? '#00FF00' : '#FF0000';
+                this.canvasCtx.beginPath();
+                this.canvasCtx.arc(tip.x * this.outputCanvas.width, tip.y * this.outputCanvas.height, 8, 0, 2 * Math.PI);
+                this.canvasCtx.fill();
+                this.canvasCtx.restore();
+            }
+
+            getFingerStates(lm) {
+                const thumbUp  = lm[4].y  < lm[3].y  && lm[4].y  < lm[2].y;
+                const indexUp  = lm[8].y  < lm[6].y  && lm[8].y  < lm[7].y  - 0.02;
+                const middleUp = lm[12].y < lm[10].y && lm[12].y < lm[11].y - 0.02;
+                const ringUp   = lm[16].y < lm[14].y && lm[16].y < lm[15].y - 0.02;
+                const pinkyUp  = lm[20].y < lm[18].y && lm[20].y < lm[19].y - 0.02;
+                return [thumbUp, indexUp, middleUp, ringUp, pinkyUp];
+            }
+
+            stabilizeGesture(newGesture) {
+                this.gestureHistory.push(newGesture);
+                if (this.gestureHistory.length > this.gestureStabilityFrames) this.gestureHistory.shift();
+                const counts = {};
+                this.gestureHistory.forEach(g => counts[g] = (counts[g] || 0) + 1);
+                let top = newGesture, max = 0;
+                for (const [g, c] of Object.entries(counts)) { if (c > max) { max = c; top = g; } }
+                if (max >= Math.ceil(this.gestureStabilityFrames / 2)) this.lastStableGesture = top;
+                return this.lastStableGesture;
+            }
+
+            updateGestureDisplay(gesture, confidence) {
+                const names = {
+                    fist: '✊ FIST', open_palm: '🖐️ OPEN PALM', peace: '✌️ PEACE',
+                    point_up: '👆 POINT UP', rock: '🤘 ROCK', thumbs_up: '👍 THUMBS UP', unknown: '❓ UNKNOWN'
+                };
+                const text = gesture === 'No hand detected' ? '👁️ Show your hand to the camera'
+                           : (names[gesture] || gesture.replace('_', ' ').toUpperCase());
+                if (this.gestureDisplay.textContent !== text) {
+                    this.gestureDisplay.classList.add('active');
+                    setTimeout(() => this.gestureDisplay.classList.remove('active'), 300);
+                }
+                this.gestureDisplay.textContent = text;
+                const pct = Math.round(confidence * 100);
+                this.confidenceText.textContent = gesture === 'No hand detected' ? '⏳ Waiting for hand…' : 'Confidence: ' + pct + '%';
+                this.confidenceFill.style.width = pct + '%';
+                if (confidence > 0.8)      { this.confidenceFill.style.background = 'linear-gradient(90deg,#28a745,#20c997)'; this.gestureDisplay.style.color = '#28a745'; }
+                else if (confidence > 0.6) { this.confidenceFill.style.background = 'linear-gradient(90deg,#ffc107,#fd7e14)'; this.gestureDisplay.style.color = '#ffc107'; }
+                else                       { this.confidenceFill.style.background = 'linear-gradient(90deg,#dc3545,#c82333)'; this.gestureDisplay.style.color = '#dc3545'; }
+                if (gesture === 'No hand detected') { this.gestureDisplay.style.color = '#ffffff'; this.confidenceFill.style.background = '#666'; }
+            }
+
+            updateFPS() {
+                this.frameCount++;
+                const now = performance.now();
+                if (now - this.lastTime >= 1000) {
+                    this.fpsDisplay.textContent = '📊 FPS: ' + Math.round((this.frameCount * 1000) / (now - this.lastTime));
+                    this.frameCount = 0;
+                    this.lastTime = now;
+                }
+            }
+
+            async startRecognition() {
+                if (this.isRunning) return;
+                try {
+                    this.initializeMediaPipe();
+                    await this.initializeCamera();
+                    this.outputCanvas.width  = this.inputVideo.videoWidth  || 640;
+                    this.outputCanvas.height = this.inputVideo.videoHeight || 480;
+                    this.isRunning = true;
+                    this.startBtn.disabled = true;
+                    this.stopBtn.disabled  = false;
+                } catch (error) {
+                    this.updateStatus('camera_status', '❌ Start Failed', 'error');
+                }
+            }
+
+            stopRecognition() {
+                if (!this.isRunning) return;
+                this.isRunning = false;
+                if (this.camera) this.camera.stop();
+                this.canvasCtx.clearRect(0, 0, this.outputCanvas.width, this.outputCanvas.height);
+                this.updateGestureDisplay('Stopped', 0);
+                this.fpsDisplay.textContent = '📊 FPS: --';
+                this.startBtn.disabled = false;
+                this.stopBtn.disabled  = true;
+                this.updateStatus('camera_status', '📷 Camera Stopped', 'loading');
+            }
+
+            updateStatus(id, text, cls) {
+                const el = document.getElementById(id);
+                el.textContent  = text;
+                el.className    = 'status ' + cls;
+            }
+        }
+
+        // Hide loading overlay immediately once DOM is ready, then boot the app
+        document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.getElementById('loading-overlay');
+            // Dismiss overlay right away — no artificial wait
+            overlay.style.opacity = '0';
+            setTimeout(() => { overlay.style.display = 'none'; }, 400);
+
+            try {
+                window.app = new VirtualNotepadApp();
+            } catch (error) {
+                overlay.style.display = 'none';
+                const el = document.getElementById('error-display');
+                if (el) { el.style.display = 'block'; el.innerHTML = '<strong>Initialization Error:</strong> ' + error.message; }
+            }
+        });
+    </script>
+</body>
+</html>
