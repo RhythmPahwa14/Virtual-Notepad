@@ -1,35 +1,13 @@
 {
-  "name": "virtual-notepad-html",
-  "version": "2.0.0",
-  "description": "AI-powered hand gesture recognition virtual notepad with pure HTML/JavaScript interface",
+  "name": "virtual-notepad",
+  "version": "1.0.0",
+  "description": "Browser-based gesture drawing experience powered by MediaPipe and Three.js",
   "type": "module",
   "scripts": {
-    "serve": "python -m http.server 3000",
-    "dev": "python -m http.server 3000",
-    "train": "python scripts/train_model.py",
-    "collect-data": "python scripts/collect_data.py",
-    "evaluate": "python scripts/evaluate_model.py",
-    "export": "python scripts/export_model.py",
-    "convert": "python scripts/convert_to_tfjs.py",
-    "test:ml": "python -m pytest tests/"
+    "dev": "vite",
+    "preview": "vite preview"
   },
-  "keywords": [
-    "gesture-recognition",
-    "mediapipe",
-    "tensorflow",
-    "computer-vision",
-    "machine-learning",
-    "html",
-    "javascript",
-    "virtual-notepad"
-  ],
-  "author": "Virtual Notepad Team",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/RhythmPahwa14/Virtual-Notepad.git"
-  },
-  "engines": {
-    "python": ">=3.8.0"
+  "devDependencies": {
+    "vite": "^5.0.0"
   }
 }

@@ -63,11 +63,12 @@ vercel --prod
 
 ```bash
 git clone https://github.com/RhythmPahwa14/Virtual-Notepad.git
-cd Virtual-Notepad/web
-python -m http.server 8000
+cd Virtual-Notepad
+npm install
+npm run dev
 ```
 
-Then open `http://localhost:8000` in your browser.
+Opens automatically at `http://localhost:3000`.
 
 > **Note**: Camera access requires HTTPS in production. Vercel provides HTTPS automatically.
 
