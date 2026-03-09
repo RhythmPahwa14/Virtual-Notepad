@@ -1,34 +1,33 @@
+﻿# Virtual Notepad
 
-# Virtual Notepad
-
-A browser-based gesture drawing experience where you draw shapes in the air using hand gestures via your webcam. Completed drawings inflate into soft, 3D balloon-like objects that float in a shared scene — no installation, just open and create.
+A browser-based gesture drawing experience where you draw shapes in the air using hand gestures via your webcam. Completed drawings inflate into soft, 3D balloon-like objects that float in a shared scene - no installation, just open and create.
 
 ## Recent Updates
 
-- **Draggable Camera Preview** — Move the camera preview anywhere on screen so it doesn't block your creations. Double-click to reset position.
-- **Improved Line Smoothing** — Jitter filter eliminates hand vibration for smoother strokes.
-- **Better Hand Detection** — Higher accuracy model for more reliable tracking.
-- **Clear All Button** — Dedicated button for easy clearing.
-- **Expandable Preview** — Click the expand button on the camera preview to enlarge it.
-- **Blue UI Theme** — Consistent blue accent colors matching the landing page.
+- **Draggable Camera Preview** - Move the camera preview anywhere on screen so it doesn't block your creations. Double-click to reset position.
+- **Improved Line Smoothing** - Jitter filter eliminates hand vibration for smoother strokes.
+- **Better Hand Detection** - Higher accuracy model for more reliable tracking.
+- **Clear All Button** - Dedicated button for easy clearing.
+- **Expandable Preview** - Click the expand button on the camera preview to enlarge it.
+- **Blue UI Theme** - Consistent blue accent colors matching the landing page.
 
 ## Features
 
-- **Gesture-Based Drawing** — Point your index finger to draw in the air.
-- **3D Balloon Inflation** — Completed shapes transform into puffy, floating 3D objects.
-- **Real-Time Hand Tracking** — Powered by MediaPipe for responsive hand detection.
-- **Color Palette** — Choose from multiple colors for your creations.
-- **Interactive Objects** — Poke, grab, and rotate your balloon creations.
-- **Draggable Camera Preview** — See your hand tracking skeleton and move it anywhere.
-- **Multiplayer Support** — Share your canvas with others via PeerJS WebRTC.
-- **Mouse/Touch Controls** — Orbit and zoom the 3D scene.
+- **Gesture-Based Drawing** - Point your index finger to draw in the air.
+- **3D Balloon Inflation** - Completed shapes transform into puffy, floating 3D objects.
+- **Real-Time Hand Tracking** - Powered by MediaPipe for responsive hand detection.
+- **Color Palette** - Choose from multiple colors for your creations.
+- **Interactive Objects** - Poke, grab, and rotate your balloon creations.
+- **Draggable Camera Preview** - See your hand tracking skeleton and move it anywhere.
+- **Multiplayer Support** - Share your canvas with others via PeerJS WebRTC.
+- **Mouse/Touch Controls** - Orbit and zoom the 3D scene.
 
 ## How It Works
 
-1. **Draw** — Extend your index finger (keep other fingers curled) to draw.
-2. **Complete Shape** — Hold an open palm for 0.5 seconds to close and inflate your drawing.
-3. **Interact** — Pinch to grab and move objects, poke with your finger to squish them.
-4. **Clear** — Click the "Clear All" button to remove all objects.
+1. **Draw** - Extend your index finger (keep other fingers curled) to draw.
+2. **Complete Shape** - Hold an open palm for 0.5 seconds to close and inflate your drawing.
+3. **Interact** - Pinch to grab and move objects, poke with your finger to squish them.
+4. **Clear** - Click the "Clear All" button to remove all objects.
 
 ## Gesture Controls
 
@@ -94,26 +93,26 @@ Opens automatically at `http://localhost:3000`.
 
 ```
 web/
-├── index.html              # Landing page
-├── air-canvas.html         # Main canvas application
-└── js/
-    └── air-canvas/
-        ├── main.js             # Application entry point
-        ├── handTracking.js     # MediaPipe hand detection
-        ├── gestureDetector.js  # Gesture recognition logic
-        ├── drawingCanvas.js    # 2D stroke rendering
-        ├── scene3D.js          # Three.js scene setup
-        ├── objectManager.js    # 3D balloon creation and physics
-        ├── balloonInflator.js  # 3D mesh generation from strokes
-        ├── handVisualizer.js   # Hand skeleton overlay
-        ├── multiplayer.js      # PeerJS multiplayer support
-        └── constants.js        # Configuration values
+ index.html              # Landing page
+ air-canvas.html         # Main canvas application
+ js/
+     air-canvas/
+         main.js             # Application entry point
+         handTracking.js     # MediaPipe hand detection
+         gestureDetector.js  # Gesture recognition logic
+         drawingCanvas.js    # 2D stroke rendering
+         scene3D.js          # Three.js scene setup
+         objectManager.js    # 3D balloon creation and physics
+         balloonInflator.js  # 3D mesh generation from strokes
+         handVisualizer.js   # Hand skeleton overlay
+         multiplayer.js      # PeerJS multiplayer support
+         constants.js        # Configuration values
 ```
 
 ## Tips for Best Results
 
 - Use good lighting so your hand is clearly visible.
-- Keep your hand about 1–2 feet from the camera.
+- Keep your hand about 1-2 feet from the camera.
 - Point with just your index finger extended for drawing.
 - Draw slowly and steadily for smoother lines.
 
