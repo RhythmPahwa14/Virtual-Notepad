@@ -53,6 +53,74 @@ A browser-based gesture drawing experience where you draw shapes in the air usin
 ### Vercel (Production)
 
 This project is configured for zero-config Vercel deployment. Just connect the repository and Vercel will serve the `web/` directory automatically.
+### Core Functionality
+- **Real-time Hand Tracking**: Advanced MediaPipe integration for precise hand detection
+- **Gesture-Based Drawing**: Draw using index finger with real-time hand tracking
+- **Smart Drawing Controls**: Point up to draw, fist to stop, open palm to erase
+- **Professional UI**: Modern design with Poppins typography and smooth animations
+- **Multi-Color Support**: 6 color options with visual color picker
+- **Canvas Controls**: Undo, clear, and save functionality
+- **Responsive Design**: Works on desktop and mobile devices
+
+### Advanced Gesture Recognition
+- **6 Gesture Classes**: Fist, Open Palm, Peace, Point Up, Rock, Thumbs Up
+
+- **Gesture Stabilization**: Intelligent gesture filtering to prevent false triggers
+- **Confidence Scoring**: Real-time confidence levels for gesture accuracy
+- **Rule-Based Recognition**: Optimized gesture detection without heavy ML models
+- **Fallback System**: Works even when AI models are unavailable
+
+### Visual Design
+- **Modern Animations**: Smooth transitions and hover effects throughout the interface
+- **Glass Morphism Effects**: Contemporary design with backdrop blur and transparency
+- **Professional Typography**: Google Fonts Poppins integration for clean text rendering
+- **Loading Experience**: Animated loading overlay with progress indicators
+- **Interactive Elements**: Animated buttons, color selectors, and gesture displays
+
+### Technical Features
+- **Browser-Based**: No installation required, runs in any modern web browser
+- **TensorFlow.js Ready**: Compatible with AI model integration
+- **MediaPipe Integration**: Industry-standard hand tracking technology
+- **Real-time Processing**: 30+ FPS gesture recognition and drawing
+- **Error Handling**: Robust error management with user-friendly messages
+- **Cross-Platform**: Compatible with Windows, macOS, and Linux
+- **Demo Mode**: Works even without trained models
+
+## Quick Deploy
+
+- **Hand Tracking**: Draw using your index finger
+- **ML Gesture Commands**: Control app with hand gestures (6 different gestures)
+- **Smart Eraser**: Pinch thumb and index finger to erase
+- **8 Colors**: Red, Blue, Green, Yellow, Purple, Orange, White, Black
+- **3 Brush Styles**: Normal, Dotted, Dashed
+- **Save Drawings**: Export as PNG files with timestamps
+- **Undo System**: Undo up to 10 recent actions
+- **Shape Tools**: Add circles, rectangles, and lines
+- **Drawing Toggle**: Start/stop drawing mode
+- **Data Collection**: Automatically collects gesture data for ML training
+- **Intuitive Controls**: Gesture + keyboard shortcuts for all features
+
+
+## Quick Start
+
+### Web Version (Recommended)
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/RhythmPahwa14/Virtual-Notepad.git
+   cd Virtual-Notepad
+   ```
+
+2. **Start local server**
+   ```bash
+   cd web
+   python -m http.server 8000
+   ```
+
+3. **Open in browser**
+   Navigate to `http://localhost:8000/working-notepad.html`
+
+### Vercel Deployment
+Deploy instantly to Vercel for production use:
 
 ```bash
 npm install -g vercel
@@ -151,8 +219,8 @@ MIT
 
 ## Development Team
 
-- **Rhythm Pahwa** - Lead Developer & UI/UX Designer | [LinkedIn](https://linkedin.com/in/rhythmpahwa)
-- **Chaitnya Dhar Dwivedi** - Co-Developer & ML Engineer | [LinkedIn](https://linkedin.com/in/chaitnya-dhar-dwivedi)
+- **Rhythm Pahwa** - Lead Developer | [LinkedIn](https://www.linkedin.com/in/pahwa-rhythm/)
+- **Chaitnya Dhar Dwivedi** - Co-Developer| [LinkedIn](https://www.linkedin.com/in/chaitnya-dhar-dwivedi-65333a255/)
 
 *Built with passion for computer vision and creating intuitive user experiences.*
 
@@ -167,5 +235,14 @@ We welcome contributions to improve the Virtual Notepad experience:
 5. **Open a Pull Request**
 
 ---
+### Development Guidelines
+- Follow existing code style and conventions
+- Test thoroughly on multiple browsers
+- Update documentation for new features
+- Ensure responsive design compatibility
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 **Star this repository if you found it helpful and follow us for more innovative projects!**
