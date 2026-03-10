@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Privacy Policy | Virtual Notepad</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#6a9ae7", "background-light": "#f6f7f8", "background-dark": "#121720"}, fontFamily: {display: "Inter"}, borderRadius: {DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px"}}}};</script>
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #0a0a0a;
+        color: #f1f1f1;
+        overflow-x: hidden;
+    }
+    .glass-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .section-number {
+        font-size: clamp(4rem, 8vw, 7rem);
+        line-height: 1;
+        letter-spacing: -0.05em;
+        font-weight: 900;
+        color: rgba(255,255,255,0.04);
+        position: absolute;
+        top: -1rem;
+        right: 0;
+        pointer-events: none;
+        user-select: none;
+    }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-[1440px] mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+        <div class="size-6 bg-primary rounded-full flex items-center justify-center">
+            <span class="material-symbols-outlined text-[16px] text-white">edit_note</span>
+        </div>
+        <span class="font-black tracking-tighter text-xl uppercase">Virtual Notepad</span>
+    </div>
+    <div class="hidden md:flex items-center gap-12">
+        <a class="text-[10px] font-bold tracking-[0.2em] uppercase hover:text-primary transition-colors" href="./air-canvas.html">Canvas</a>
+        <a class="text-[10px] font-bold tracking-[0.2em] uppercase text-primary" href="./privacy.html">Privacy</a>
+        <a class="text-[10px] font-bold tracking-[0.2em] uppercase hover:text-primary transition-colors" href="./features.html">Features</a>
+    </div>
+    <button onclick="window.location.href='./air-canvas.html'" class="bg-white text-black hover:bg-primary hover:text-white transition-all duration-300 rounded-full px-6 py-2 text-[10px] font-bold tracking-[0.1em] uppercase">
+        Get Started
+    </button>
+</div>
+</nav>
+
+<main class="pt-20">
+
+    <!-- Hero -->
+    <section class="relative py-28 px-6 md:px-20 border-b border-white/5 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none"></div>
+        <div class="max-w-[900px] mx-auto">
+            <span class="inline-block border border-primary/40 text-primary text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-1.5 rounded-full mb-8">Legal Transparency</span>
+            <h1 class="text-[clamp(3rem,10vw,7rem)] font-black leading-[0.9] tracking-tighter text-white mb-8">Privacy<br/>First.</h1>
+            <p class="text-white/60 text-lg md:text-xl max-w-xl leading-relaxed mb-4 font-light">
+                Virtual Notepad respects your privacy. This application is designed to work directly in your browser without collecting or storing personal data.
+            </p>
+            <p class="text-white/40 text-sm mb-10">Last Updated: <span class="text-primary font-semibold">March 2026</span></p>
+            <div class="flex flex-wrap gap-4">
+                <button onclick="window.print()" class="flex items-center gap-2 bg-white/10 border border-white/20 hover:bg-white hover:text-black text-white rounded-full px-8 py-3 text-sm font-bold tracking-widest uppercase transition-all">
+                    <span class="material-symbols-outlined text-[18px]">download</span> Download PDF
+                </button>
+                <button onclick="window.location.href='./index.html'" class="flex items-center gap-2 border border-white/10 hover:border-primary/50 hover:text-primary text-white/60 rounded-full px-8 py-3 text-sm font-bold tracking-widest uppercase transition-all">
+                    <span class="material-symbols-outlined text-[18px]">arrow_back</span> Back to Home
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 01. No Personal Data Collection -->
+    <section class="py-20 px-6 md:px-20 border-b border-white/5">
+        <div class="max-w-[900px] mx-auto relative">
+            <p class="text-primary text-xs font-black tracking-[0.4em] uppercase mb-3">01</p>
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-6">No Personal Data Collection</h2>
+            <div class="flex flex-col gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="size-6 rounded-full border border-primary/50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="material-symbols-outlined text-primary text-[14px]">check</span>
+                    </div>
+                    <p class="text-white/55 leading-relaxed text-base md:text-lg">Virtual Notepad does not collect, store, or process any personal information.</p>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="size-6 rounded-full border border-primary/50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="material-symbols-outlined text-primary text-[14px]">check</span>
+                    </div>
+                    <p class="text-white/55 leading-relaxed text-base md:text-lg">You can use the application without creating an account or providing any personal details.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 02. Camera Usage -->
+    <section class="py-20 px-6 md:px-20 border-b border-white/5 bg-white/[0.02]">
+        <div class="max-w-[900px] mx-auto">
+            <p class="text-primary text-xs font-black tracking-[0.4em] uppercase mb-3">02</p>
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-6">Camera Usage</h2>
+            <p class="text-white/55 leading-relaxed mb-10 text-base md:text-lg">
+                The application uses your device camera only to detect hand gestures for drawing.
+            </p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass-card rounded-2xl p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="size-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-[20px]">videocam</span>
+                        </div>
+                        <h3 class="font-black text-lg tracking-tight">Browser Permission</h3>
+                    </div>
+                    <p class="text-white/50 text-sm leading-relaxed">Camera access is requested by your browser — you are always in control and can revoke it at any time.</p>
+                </div>
+                <div class="glass-card rounded-2xl p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="size-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-[20px]">memory</span>
+                        </div>
+                        <h3 class="font-black text-lg tracking-tight">On-Device Processing</h3>
+                    </div>
+                    <p class="text-white/50 text-sm leading-relaxed">All hand tracking and gesture processing runs locally in your browser using WebAssembly. Nothing is uploaded.</p>
+                </div>
+                <div class="glass-card rounded-2xl p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="size-10 rounded-full bg-red-500/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-red-400 text-[20px]">block</span>
+                        </div>
+                        <h3 class="font-black text-lg tracking-tight">No Recording</h3>
+                    </div>
+                    <p class="text-white/50 text-sm leading-relaxed">No video or images are recorded, stored, or transmitted to any server — ever.</p>
+                </div>
+                <div class="glass-card rounded-2xl p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="size-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-[20px]">lock</span>
+                        </div>
+                        <h3 class="font-black text-lg tracking-tight">Stays on Device</h3>
+                    </div>
+                    <p class="text-white/50 text-sm leading-relaxed">Camera data never leaves your device. Your visual input is processed in memory and immediately discarded.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 03. No Third Party Tracking -->
+    <section class="py-20 px-6 md:px-20 border-b border-white/5">
+        <div class="max-w-[900px] mx-auto">
+            <p class="text-primary text-xs font-black tracking-[0.4em] uppercase mb-3">03</p>
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-6">No Third Party Tracking</h2>
+            <p class="text-white/55 leading-relaxed mb-10 text-base md:text-lg">Virtual Notepad does not use any of the following:</p>
+            <div class="flex flex-col gap-4 mb-10">
+                <div class="flex items-center gap-4 glass-card rounded-xl px-6 py-4">
+                    <span class="material-symbols-outlined text-red-400 text-[20px]">cancel</span>
+                    <p class="text-white/70 text-sm font-semibold">Analytics trackers</p>
+                </div>
+                <div class="flex items-center gap-4 glass-card rounded-xl px-6 py-4">
+                    <span class="material-symbols-outlined text-red-400 text-[20px]">cancel</span>
+                    <p class="text-white/70 text-sm font-semibold">Advertising networks</p>
+                </div>
+                <div class="flex items-center gap-4 glass-card rounded-xl px-6 py-4">
+                    <span class="material-symbols-outlined text-red-400 text-[20px]">cancel</span>
+                    <p class="text-white/70 text-sm font-semibold">Cookies for tracking</p>
+                </div>
+                <div class="flex items-center gap-4 glass-card rounded-xl px-6 py-4">
+                    <span class="material-symbols-outlined text-red-400 text-[20px]">cancel</span>
+                    <p class="text-white/70 text-sm font-semibold">Third party data collection tools</p>
+                </div>
+            </div>
+            <p class="text-white/55 leading-relaxed text-base md:text-lg">The project only uses open source libraries for graphics and hand tracking.</p>
+        </div>
+    </section>
+
+    <!-- 04. Local Processing -->
+    <section class="py-20 px-6 md:px-20 border-b border-white/5 bg-white/[0.02]">
+        <div class="max-w-[900px] mx-auto">
+            <p class="text-primary text-xs font-black tracking-[0.4em] uppercase mb-3">04</p>
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-6">Local Processing</h2>
+            <p class="text-white/55 leading-relaxed mb-10 text-base md:text-lg">
+                All application logic, including gesture detection and drawing, is processed entirely on your device using browser technologies.
+            </p>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <span class="material-symbols-outlined text-primary text-[36px] mb-4 block">code</span>
+                    <h3 class="font-black text-base uppercase tracking-tight mb-2">JavaScript</h3>
+                    <p class="text-white/45 text-sm leading-relaxed">All app logic runs client-side with zero server calls.</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <span class="material-symbols-outlined text-primary text-[36px] mb-4 block">view_in_ar</span>
+                    <h3 class="font-black text-base uppercase tracking-tight mb-2">WebGL</h3>
+                    <p class="text-white/45 text-sm leading-relaxed">GPU-accelerated rendering runs entirely in-browser.</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <span class="material-symbols-outlined text-primary text-[36px] mb-4 block">gesture</span>
+                    <h3 class="font-black text-base uppercase tracking-tight mb-2">MediaPipe</h3>
+                    <p class="text-white/45 text-sm leading-relaxed">Hand tracking model runs via WebAssembly — fully on-device.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 05. Multiplayer -->
+    <section class="py-20 px-6 md:px-20 border-b border-white/5">
+        <div class="max-w-[900px] mx-auto">
+            <p class="text-primary text-xs font-black tracking-[0.4em] uppercase mb-3">05</p>
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-6">Multiplayer Feature</h2>
+            <div class="flex flex-col gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="size-6 rounded-full border border-primary/50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="material-symbols-outlined text-primary text-[14px]">check</span>
+                    </div>
+                    <p class="text-white/55 leading-relaxed text-base md:text-lg">If multiplayer mode is used, connections occur directly between users through WebRTC peer-to-peer technology.</p>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="size-6 rounded-full border border-primary/50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="material-symbols-outlined text-primary text-[14px]">check</span>
+                    </div>
+                    <p class="text-white/55 leading-relaxed text-base md:text-lg">No personal information is stored by this application during or after a multiplayer session.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 06. Security -->
+    <section class="py-20 px-6 md:px-20 border-b border-white/5 bg-white/[0.02]">
+        <div class="max-w-[900px] mx-auto">
+            <p class="text-primary text-xs font-black tracking-[0.4em] uppercase mb-3">06</p>
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-6">Security</h2>
+            <div class="glass-card rounded-2xl p-8 flex items-start gap-6">
+                <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <span class="material-symbols-outlined text-primary text-[24px]">shield</span>
+                </div>
+                <p class="text-white/55 leading-relaxed text-base md:text-lg">
+                    Because the application runs directly in the browser and does not store data, there is minimal risk related to personal information. There is nothing to steal — because nothing is ever saved.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 07. Changes -->
+    <section class="py-20 px-6 md:px-20 border-b border-white/5">
+        <div class="max-w-[900px] mx-auto">
+            <p class="text-primary text-xs font-black tracking-[0.4em] uppercase mb-3">07</p>
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-6">Changes to This Policy</h2>
+            <p class="text-white/55 leading-relaxed text-base md:text-lg">
+                This privacy policy may be updated if the application functionality changes. Any updates will be reflected on this page with a revised "Last Updated" date.
+            </p>
+        </div>
+    </section>
+
+    <!-- 08. Contact -->
+    <section class="py-20 px-6 md:px-20">
+        <div class="max-w-[900px] mx-auto">
+            <p class="text-primary text-xs font-black tracking-[0.4em] uppercase mb-3">08</p>
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-8">Contact</h2>
+            <p class="text-white/55 leading-relaxed mb-8 text-base md:text-lg">
+                If you have questions about this privacy policy, you may contact:
+            </p>
+            <div class="glass-card rounded-2xl p-8 flex items-start gap-6 max-w-md">
+                <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <span class="material-symbols-outlined text-primary text-[24px]">person</span>
+                </div>
+                <div>
+                    <p class="font-black text-lg text-white mb-1">Rhythm Pahwa</p>
+                    <a href="https://github.com/RhythmPahwa14" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-primary hover:underline text-sm font-semibold">
+                        <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                        github.com/RhythmPahwa14
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="border-t border-white/5 py-12 px-6 md:px-20 bg-background-dark">
+<div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+    <div class="flex items-center gap-3 opacity-50">
+        <div class="size-5 bg-white rounded-full flex items-center justify-center">
+            <span class="material-symbols-outlined text-[12px] text-black">edit_note</span>
+        </div>
+        <span class="font-black tracking-tighter text-sm uppercase">Virtual Notepad</span>
+    </div>
+    <p class="text-[10px] font-bold tracking-widest uppercase opacity-50">Made with ❤️ by <a class="hover:text-primary transition-colors" href="https://github.com/RhythmPahwa14" target="_blank" rel="noopener noreferrer">Rhythm</a> &amp; <a class="hover:text-primary transition-colors" href="https://github.com/ChaitnyaDwivedi" target="_blank" rel="noopener noreferrer">Chaitnya</a></p>
+    <p class="text-[10px] font-bold tracking-widest uppercase opacity-30">© 2026 VIRTUAL NOTEPAD INC.</p>
+</div>
+</footer>
+
+</body>
+</html>
