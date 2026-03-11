@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
   <!-- Preload MediaPipe assets for faster initialization -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -248,7 +249,8 @@
     }
 
     .action-btn .icon {
-      font-size: 16px;
+      font-size: 18px;
+      line-height: 1;
     }
 
     /* Color palette */
@@ -317,6 +319,11 @@
       align-items: center;
       justify-content: center;
       font-size: 13px;
+    }
+
+    .gesture-icon .material-symbols-outlined {
+      font-size: 15px;
+      line-height: 1;
     }
 
     /* Status message */
@@ -701,11 +708,11 @@
         <!-- Action buttons -->
         <div class="action-buttons">
           <button class="action-btn" id="clear-all-btn">
-            <span class="icon">🗑️</span>
+            <span class="icon material-symbols-outlined">delete_sweep</span>
             <span class="btn-text">Clear All</span>
           </button>
           <button class="action-btn" id="invite-btn">
-            <span class="icon">👥</span>
+            <span class="icon material-symbols-outlined">group_add</span>
             <span class="btn-text">Invite Friend</span>
           </button>
         </div>
@@ -727,15 +734,15 @@
         <!-- Gesture hints -->
         <div class="gesture-hints">
           <div class="gesture-hint">
-            <div class="gesture-icon">☝️</div>
+            <div class="gesture-icon"><span class="material-symbols-outlined">touch_app</span></div>
             <span>Point to draw</span>
           </div>
           <div class="gesture-hint">
-            <div class="gesture-icon">🤏</div>
+            <div class="gesture-icon"><span class="material-symbols-outlined">pinch</span></div>
             <span>Pinch to grab</span>
           </div>
           <div class="gesture-hint">
-            <div class="gesture-icon">🖐️</div>
+            <div class="gesture-icon"><span class="material-symbols-outlined">back_hand</span></div>
             <span>Palm to inflate</span>
           </div>
         </div>
@@ -767,7 +774,7 @@
             <div class="room-code-label">Your Room Code</div>
             <div class="room-code-display">
               <div class="room-code" id="room-code">------</div>
-              <button class="copy-btn" id="copy-code-btn" title="Copy to clipboard">📋</button>
+              <button class="copy-btn" id="copy-code-btn" title="Copy to clipboard"><span class="material-symbols-outlined">content_copy</span></button>
             </div>
           </div>
 
