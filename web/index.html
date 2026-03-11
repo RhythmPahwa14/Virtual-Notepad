@@ -6,6 +6,7 @@
 <title>Virtual Notepad | Spatial Computing</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Double+Ink&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#6a9ae7", "background-light": "#f6f7f8", "background-dark": "#121720"}, fontFamily: {display: "Inter"}, borderRadius: {DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px"}}}};</script>
@@ -22,8 +23,7 @@
             letter-spacing: -0.05em;
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .hide-scrollbar::-webkit-scrollbar {
@@ -46,16 +46,16 @@
 <span class="font-black tracking-tighter text-xl uppercase">Virtual Notepad</span>
 </div>
 <div class="hidden md:flex items-center gap-12">
-<a class="text-[10px] font-bold tracking-[0.2em] uppercase hover:text-primary transition-colors" href="./air-canvas.html">Canvas</a>
-<a class="text-[10px] font-bold tracking-[0.2em] uppercase hover:text-primary transition-colors" href="./privacy.html">Privacy</a>
-<a class="text-[10px] font-bold tracking-[0.2em] uppercase hover:text-primary transition-colors" href="./features.html">Features</a>
+<a class="text-sm font-bold tracking-[0.2em] uppercase hover:text-primary transition-colors" href="./air-canvas.html">Canvas</a>
+<a class="text-sm font-bold tracking-[0.2em] uppercase hover:text-primary transition-colors" href="./privacy.html">Privacy</a>
+<a class="text-sm font-bold tracking-[0.2em] uppercase hover:text-primary transition-colors" href="./features.html">Features</a>
 </div>
-<button onclick="window.location.href='./air-canvas.html'" class="bg-white text-black hover:bg-primary hover:text-white transition-all duration-300 rounded-full px-6 py-2 text-[10px] font-bold tracking-[0.1em] uppercase">
+<button onclick="window.location.href='./air-canvas.html'" class="bg-white text-black hover:bg-primary hover:text-white transition-all duration-300 rounded-full px-6 py-2 text-sm font-bold tracking-[0.1em] uppercase">
                 Get Started
             </button>
 </div>
 </nav>
-<main class="pt-20">
+<main class="pt-14">
 <!-- Hero Section: Asymmetrical Editorial Layout -->
 <section class="relative min-h-[90vh] flex flex-col lg:flex-row items-center overflow-hidden">
 <!-- Cinematic Visual Left -->
@@ -69,18 +69,16 @@
 </div>
 <!-- Massive Typography Right -->
 <div class="w-full lg:w-1/2 p-8 lg:p-20 flex flex-col justify-center items-start">
-<h1 class="text-huge font-black text-white mb-8">
+<h1 class="text-[clamp(2.5rem,9vw,7rem)] font-black leading-[0.85] tracking-tighter text-white mb-8">
                     VIRTUAL<br/>NOTEPAD
                 </h1>
-<p class="text-white/60 text-lg md:text-xl max-w-md leading-relaxed mb-10 font-light">
-                    Experience zero-latency digital ink in three-dimensional space. The boundary between physical and digital thought has vanished.
+<p class="text-white/50 text-lg md:text-xl max-w-md leading-relaxed mb-4 font-light">
+                    Draw in the air using hand gestures.<br/>Your webcam becomes a digital canvas where ideas turn into floating 3D creations.
                 </p>
+<p class="text-white/50 text-lg md:text-xl max-w-md leading-relaxed mb-10 font-light italic">No installation. Just open the browser and start creating.</p>
 <div class="flex flex-wrap gap-4">
 <button onclick="window.location.href='./air-canvas.html'" class="bg-primary hover:bg-primary/80 text-white rounded-full px-10 py-5 text-sm font-bold tracking-widest uppercase transition-transform active:scale-95">
                         Start Creating
-                    </button>
-<button class="border border-white/20 hover:bg-white hover:text-black text-white rounded-full px-10 py-5 text-sm font-bold tracking-widest uppercase transition-all">
-                        Watch Demo
                     </button>
 </div>
 </div>
@@ -89,26 +87,26 @@
 <section class="py-24 px-6 md:px-20 border-t border-white/5">
 <div class="max-w-[1440px] mx-auto">
 <div class="flex flex-col lg:flex-row gap-20">
-<!-- Column 1: Spatial Gestures -->
+<!-- Column 1: Gesture Drawing -->
 <div class="flex-1 group">
 <span class="text-primary text-sm font-black tracking-widest mb-6 block">01</span>
-<h2 class="text-4xl font-bold mb-6 tracking-tight">Spatial Gestures</h2>
+<h2 class="text-4xl font-bold mb-6 tracking-tight">Gesture Drawing</h2>
 <p class="text-white/50 leading-relaxed mb-8">
-                            Navigate your ideas with industry-leading hand tracking. Natural mapping transforms every pinch and swipe into precise digital action.
+                            Use your index finger to draw shapes directly in the air. Real time hand tracking detects your movements and converts them into smooth strokes on the canvas.
                         </p>
 <div class="aspect-square rounded-xl overflow-hidden glass-card p-1">
-<img alt="Gesture Control" class="w-full h-full object-cover rounded-lg opacity-40 group-hover:opacity-100 transition-opacity duration-700" data-alt="Monochrome close up of high-tech hand gesture sensors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLlhhQRolGw_yuq_Usa6aOtWR9Dhhl2DB3_frYJQa9ElsV0res5qUKCH7xWHZmvouKDWT5PnGqbryN_vYYgAJQi2WQCBELKHS3_mQiquJtQjLutoXkOXEOf-8YrjG4RPWIxFw46hzy4930KWGWHN8aof8lb9u83IOjDZdaMAc9kpeM6Br4n4GyFKaqLGnzqGgklCp3LsVs6u7b7nBc-WqbXuY6i9hF111Xr9SMoSD1utR0NSj8zXM-HJcvYw_Zk8t3J2pv02z2JT_0"/>
+<img alt="Gesture Drawing" class="w-full h-full object-cover rounded-lg opacity-40 group-hover:opacity-100 transition-opacity duration-700" src="./drawing-hand-that-says-index-finger_1221953-68349.jpg"/>
 </div>
 </div>
-<!-- Column 2: Real-time Canvas -->
+<!-- Column 2: Real Time 3D Canvas -->
 <div class="flex-1 group pt-0 lg:pt-32">
 <span class="text-primary text-sm font-black tracking-widest mb-6 block">02</span>
-<h2 class="text-4xl font-bold mb-6 tracking-tight">Real-time Canvas</h2>
+<h2 class="text-4xl font-bold mb-6 tracking-tight">Real Time 3D Canvas</h2>
 <p class="text-white/50 leading-relaxed mb-8">
-                            Collaborate on an infinite digital plane. Multi-user spatial synchronization ensures that teams remain aligned regardless of physical distance.
+                            Your drawings are transformed into soft balloon like 3D objects that float inside an interactive scene. Rotate, grab, and interact with your creations naturally.
                         </p>
 <div class="aspect-square rounded-xl overflow-hidden glass-card p-1">
-<img alt="Global Network" class="w-full h-full object-cover rounded-lg opacity-40 group-hover:opacity-100 transition-opacity duration-700" data-alt="Abstract white glowing grid representing a global digital network" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz61GqFDpfaIvbGG5u9cgGQYl13aYcej_EJqgyHodwg86hezDWAOS8YHDABs_dp4_Qea-HvwmCPaz7qUuNaPTeAMaW01gM9XnPiVYKeWAmSyoFD0PvSYjlXXjAep64R2gb1ZWr34d-b7DemWz4Awa7-tQ7eJe1diUbHDEtv6nZ2KOtVicdJ2cjIn9kF8FctfU4beVgp3G3tNiRsILiB46zn4lq5kwRz5LZdf3wCLEO_xKetujp6_k3LA38JAQntn0JY_zBdLOD8zbx"/>
+<img alt="Real Time 3D Canvas" class="w-full h-full object-cover rounded-lg opacity-40 group-hover:opacity-100 transition-opacity duration-700" src="./irregular-shape-beauty-1.jpg"/>
 </div>
 </div>
 <!-- Column 3: Privacy First -->
@@ -116,81 +114,91 @@
 <span class="text-primary text-sm font-black tracking-widest mb-6 block">03</span>
 <h2 class="text-4xl font-bold mb-6 tracking-tight">Privacy First</h2>
 <p class="text-white/50 leading-relaxed mb-8">
-                            Your thoughts are your own. We utilize local-first encryption and on-device processing to ensure maximum security for your data.
+                            Your camera is used only for gesture detection. All processing happens locally in your browser. No video is stored and no personal data is collected.
                         </p>
 <div class="aspect-square rounded-xl overflow-hidden glass-card p-1">
-<img alt="Data Security" class="w-full h-full object-cover rounded-lg opacity-40 group-hover:opacity-100 transition-opacity duration-700" data-alt="Minimalist geometric server nodes with subtle light highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0kxeYgX8-sxRNUK0GXc96e_8qd9KYOJqqoyJnjlfep0r9LjRYBrju0y6iZgYysGamQvrqm94dnYUJxe2JPPRK8gjCHciPKm9SJQe7iQdxSM2E5nVJNeclx7AD_QtLwOr44z2AzUwcvkAt4ceT6CjJDmBlvKOdNhRM0jh7Sy7YIVPJFLwQ0Nk7zPeyvXROWTbzgq55_9rd1Nb_1U99X_mdHL24Ov47mJEsypy09zKlKmABRKvFP32XOCI7UKKjLYhijgwNpVQ3TeRN"/>
+<img alt="Privacy First" class="w-full h-full object-cover rounded-lg opacity-40 group-hover:opacity-100 transition-opacity duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0kxeYgX8-sxRNUK0GXc96e_8qd9KYOJqqoyJnjlfep0r9LjRYBrju0y6iZgYysGamQvrqm94dnYUJxe2JPPRK8gjCHciPKm9SJQe7iQdxSM2E5nVJNeclx7AD_QtLwOr44z2AzUwcvkAt4ceT6CjJDmBlvKOdNhRM0jh7Sy7YIVPJFLwQ0Nk7zPeyvXROWTbzgq55_9rd1Nb_1U99X_mdHL24Ov47mJEsypy09zKlKmABRKvFP32XOCI7UKKjLYhijgwNpVQ3TeRN"/>
 </div>
 </div>
 </div>
 </div>
 </section>
-<!-- Horizontal Feature Gallery -->
+<!-- Core Features Grid -->
 <section class="py-24 bg-white/5">
-<div class="px-6 md:px-20 mb-12 flex justify-between items-end">
-<div>
+<div class="px-6 md:px-20 mb-12">
 <p class="text-primary text-xs font-bold tracking-[0.4em] uppercase mb-4">The Ecosystem</p>
-<h2 class="text-5xl font-black tracking-tighter">UNPARALLELED TOOLS</h2>
+<h2 class="text-5xl font-black tracking-tighter">CORE FEATURES</h2>
 </div>
-<div class="flex gap-4">
-<button class="size-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
-<span class="material-symbols-outlined">arrow_back</span>
-</button>
-<button class="size-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
-<span class="material-symbols-outlined">arrow_forward</span>
-</button>
-</div>
-</div>
-<div class="flex gap-6 overflow-x-auto px-6 md:px-20 pb-12 hide-scrollbar">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 md:px-20 pb-12">
 <!-- Card 1 -->
-<div class="min-w-[400px] aspect-[4/5] glass-card rounded-2xl p-8 flex flex-col justify-between group hover:border-primary/50 transition-all cursor-pointer">
+<div class="glass-card rounded-2xl p-8 flex flex-col gap-6 group hover:border-primary/50 transition-all cursor-pointer">
 <div class="size-14 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary transition-colors">
 <span class="material-symbols-outlined">draw</span>
 </div>
 <div>
-<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">Haptic Feedback</h3>
-<p class="text-white/40 text-sm leading-relaxed">Precise tactile response for every virtual stroke, mimicking the feel of physical paper.</p>
+<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">Gesture Based Drawing</h3>
+<p class="text-white/40 text-sm leading-relaxed">Draw shapes by pointing your index finger toward the camera.</p>
 </div>
 </div>
 <!-- Card 2 -->
-<div class="min-w-[400px] aspect-[4/5] glass-card rounded-2xl p-8 flex flex-col justify-between group hover:border-primary/50 transition-all cursor-pointer">
+<div class="glass-card rounded-2xl p-8 flex flex-col gap-6 group hover:border-primary/50 transition-all cursor-pointer">
 <div class="size-14 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary transition-colors">
-<span class="material-symbols-outlined">psychology</span>
+<span class="material-symbols-outlined">sign_language</span>
 </div>
 <div>
-<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">AI Handwriting</h3>
-<p class="text-white/40 text-sm leading-relaxed">Convert your spatial sketches into editable text and vectorized assets instantly.</p>
+<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">Real Time Hand Tracking</h3>
+<p class="text-white/40 text-sm leading-relaxed">Powered by MediaPipe for fast and accurate gesture recognition.</p>
 </div>
 </div>
 <!-- Card 3 -->
-<div class="min-w-[400px] aspect-[4/5] glass-card rounded-2xl p-8 flex flex-col justify-between group hover:border-primary/50 transition-all cursor-pointer">
+<div class="glass-card rounded-2xl p-8 flex flex-col gap-6 group hover:border-primary/50 transition-all cursor-pointer">
 <div class="size-14 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary transition-colors">
-<span class="material-symbols-outlined">cloud_sync</span>
+<span class="material-symbols-outlined">3d_rotation</span>
 </div>
 <div>
-<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">Cloud Sync</h3>
-<p class="text-white/40 text-sm leading-relaxed">Seamlessly move between VR headsets and mobile devices with encrypted sync.</p>
+<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">3D Balloon Objects</h3>
+<p class="text-white/40 text-sm leading-relaxed">Completed drawings inflate into soft 3D shapes that float in the scene.</p>
 </div>
 </div>
 <!-- Card 4 -->
-<div class="min-w-[400px] aspect-[4/5] glass-card rounded-2xl p-8 flex flex-col justify-between group hover:border-primary/50 transition-all cursor-pointer">
+<div class="glass-card rounded-2xl p-8 flex flex-col gap-6 group hover:border-primary/50 transition-all cursor-pointer">
 <div class="size-14 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary transition-colors">
-<span class="material-symbols-outlined">vrpano</span>
+<span class="material-symbols-outlined">touch_app</span>
 </div>
 <div>
-<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">VR Export</h3>
-<p class="text-white/40 text-sm leading-relaxed">Turn your notes into immersive presentation rooms with a single gesture.</p>
+<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">Interactive Objects</h3>
+<p class="text-white/40 text-sm leading-relaxed">Grab, rotate, and move objects using natural hand gestures.</p>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="glass-card rounded-2xl p-8 flex flex-col gap-6 group hover:border-primary/50 transition-all cursor-pointer">
+<div class="size-14 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">palette</span>
+</div>
+<div>
+<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">Color Palette</h3>
+<p class="text-white/40 text-sm leading-relaxed">Choose different colors before drawing to create unique designs.</p>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="glass-card rounded-2xl p-8 flex flex-col gap-6 group hover:border-primary/50 transition-all cursor-pointer">
+<div class="size-14 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">group</span>
+</div>
+<div>
+<h3 class="text-2xl font-bold mb-3 uppercase tracking-tight">Multiplayer Canvas</h3>
+<p class="text-white/40 text-sm leading-relaxed">Share the canvas with others and collaborate in real time using WebRTC.</p>
 </div>
 </div>
 </div>
 </section>
 <!-- Final CTA -->
 <section class="py-40 text-center px-6">
-<h2 class="text-huge font-black mb-12 tracking-tighter opacity-20">FUTURE IS HERE</h2>
+<h2 class="text-5xl md:text-6xl font-black mb-12 tracking-tighter opacity-20">FUTURE OF CREATIVE INTERFACES</h2>
 <div class="max-w-2xl mx-auto">
-<p class="text-2xl mb-12 text-white/80">Ready to transcend the traditional notepad?</p>
+<p class="text-2xl mb-12 text-white/80">Ready to turn your hand movements into digital creations?</p>
 <button onclick="window.location.href='./air-canvas.html'" class="bg-white text-black rounded-full px-16 py-6 text-sm font-black tracking-[0.2em] uppercase hover:bg-primary hover:text-white transition-all scale-110">
-                    Get Access Now
+                    Start Creating
                 </button>
 </div>
 </section>
@@ -203,8 +211,8 @@
 </div>
 <span class="font-black tracking-tighter text-sm uppercase">Virtual Notepad</span>
 </div>
-        <p class="text-[10px] font-bold tracking-widest uppercase opacity-50">Made with ❤️ by <a class="hover:text-primary transition-colors" href="https://github.com/RhythmPahwa14" target="_blank" rel="noopener noreferrer">Rhythm</a> &amp; <a class="hover:text-primary transition-colors" href="https://github.com/ChaitnyaDwivedi" target="_blank" rel="noopener noreferrer">Chaitnya</a></p>
-<p class="text-[10px] font-bold tracking-widest uppercase opacity-30">© 2026 VIRTUAL NOTEPAD INC.</p>
+        <p class="text-sm font-bold tracking-widest uppercase opacity-50">Made with ❤️ by <a class="hover:text-primary transition-colors" href="https://github.com/RhythmPahwa14" target="_blank" rel="noopener noreferrer">Rhythm Pahwa</a> &amp; <a class="hover:text-primary transition-colors" href="https://github.com/ChaitnyaDwivedi" target="_blank" rel="noopener noreferrer">Chaitnya Dhar Dwivedi</a></p>
+<p class="text-xs font-bold tracking-widest uppercase opacity-30">© 2026 VIRTUAL NOTEPAD</p>
 </div>
 </footer>
 </body>
