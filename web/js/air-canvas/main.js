@@ -480,7 +480,9 @@ class AirCanvas {
     } else {
       this.drawingCanvas.addPoint(position);
     }
-    this.drawingCanvas.render();
+    // render() is intentionally NOT called here — the animate() rAF loop
+    // handles all canvas rendering at 60fps, keeping it decoupled from
+    // the MediaPipe callback frequency (~20-30fps with variable timing).
   }
 
   handlePinch(landmarks) {
