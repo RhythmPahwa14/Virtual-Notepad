@@ -1,6 +1,9 @@
 import { STROKE, GESTURE } from './constants.js';
 
-const JITTER_THRESHOLD = 3;
+// Exponential Moving Average alpha.
+// 0.5 = ~1 frame of smoothing lag at 30fps (~33ms) – snappy with natural jitter suppression.
+// Lower = smoother but laggier. Higher = faster but jittery.
+const EMA_ALPHA = 0.5;
 
 export class DrawingCanvas {
   constructor(canvas) {
@@ -12,8 +15,7 @@ export class DrawingCanvas {
     this.currentStroke = null;
     this.completedStrokes = [];
     this.livePosition = null;
-    this.filteredPosition = null;
-    this.recentPoints = [];
+    this.emaPosition = null; // replaces filteredPosition + recentPoints
 
     this.ctx.imageSmoothingEnabled = true;
     this.ctx.imageSmoothingQuality = 'high';
@@ -34,73 +36,42 @@ export class DrawingCanvas {
       closed: false
     };
     this.livePosition = point;
-    this.filteredPosition = point;
-    this.recentPoints = [point];
+    this.emaPosition = point; // seed EMA so first move isn't jarring
   }
 
   addPoint(point) {
     if (!this.currentStroke) return;
 
-    const filtered = this.applyJitterFilter(point);
-
-    this.recentPoints.push(filtered);
-    if (this.recentPoints.length > 10) {
-      this.recentPoints.shift();
-    }
-
-    const smoothed = this.getSmoothedPosition();
+    const smoothed = this.applyEMA(point);
     this.livePosition = smoothed;
 
     const lastPoint = this.currentStroke.points[this.currentStroke.points.length - 1];
-    const dist = this.distance(smoothed, lastPoint);
-
-    if (dist >= STROKE.MIN_POINT_DISTANCE) {
-      this.currentStroke.points.push(smoothed);
+    if (this.distance(smoothed, lastPoint) >= STROKE.MIN_POINT_DISTANCE) {
+      this.currentStroke.points.push({ ...smoothed });
     }
   }
 
-  applyJitterFilter(point) {
-    if (!this.filteredPosition) {
-      this.filteredPosition = point;
-      return point;
+  // Single-pole EMA: output = alpha*input + (1-alpha)*previous
+  // Effective lag = (1-alpha)/alpha frames ≈ 1 frame at alpha=0.5
+  applyEMA(point) {
+    if (!this.emaPosition) {
+      this.emaPosition = { ...point };
+      return this.emaPosition;
     }
-
-    const dist = this.distance(point, this.filteredPosition);
-    if (dist < JITTER_THRESHOLD) {
-      return this.filteredPosition;
-    }
-
-    this.filteredPosition = point;
-    return point;
-  }
-
-  getSmoothedPosition() {
-    if (this.recentPoints.length === 0) return { x: 0, y: 0 };
-
-    let sumX = 0, sumY = 0;
-    for (const p of this.recentPoints) {
-      sumX += p.x;
-      sumY += p.y;
-    }
-    return {
-      x: sumX / this.recentPoints.length,
-      y: sumY / this.recentPoints.length
+    this.emaPosition = {
+      x: EMA_ALPHA * point.x + (1 - EMA_ALPHA) * this.emaPosition.x,
+      y: EMA_ALPHA * point.y + (1 - EMA_ALPHA) * this.emaPosition.y
     };
+    return this.emaPosition;
   }
 
   updateLivePosition(point) {
-    const filtered = this.applyJitterFilter(point);
-    this.recentPoints.push(filtered);
-    if (this.recentPoints.length > 10) {
-      this.recentPoints.shift();
-    }
-    this.livePosition = this.getSmoothedPosition();
+    this.livePosition = this.applyEMA(point);
   }
 
   clearLivePosition() {
     this.livePosition = null;
-    this.filteredPosition = null;
-    this.recentPoints = [];
+    this.emaPosition = null;
   }
 
   distance(p1, p2) {

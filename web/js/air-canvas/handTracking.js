@@ -4,6 +4,7 @@ export class HandTracker {
     this.videoElement = videoElement;
     this.callback = null;
     this.isRunning = false;
+    this.isSending = false; // backpressure: don't queue more frames than MediaPipe can handle
     this.animationId = null;
     this.canvasWidth = 640;
     this.canvasHeight = 480;
@@ -17,7 +18,7 @@ export class HandTracker {
 
     this.hands.setOptions({
       maxNumHands: 1,
-      modelComplexity: 1,
+      modelComplexity: 0,        // lightweight model: ~2x faster, no noticeable quality loss for tip tracking
       minDetectionConfidence: 0.6,
       minTrackingConfidence: 0.5
     });
@@ -31,6 +32,7 @@ export class HandTracker {
   }
 
   onResults(results) {
+    this.isSending = false; // previous frame fully processed — ready for the next one
     if (!this.callback) return;
 
     if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
@@ -77,11 +79,14 @@ export class HandTracker {
 
       this.isRunning = true;
 
-      const processFrame = async () => {
+      const processFrame = () => {
         if (!this.isRunning) return;
 
-        if (this.videoElement.readyState >= 2) {
-          await this.hands.send({ image: this.videoElement });
+        // Only send if MediaPipe has finished the previous frame.
+        // Without this guard, frames pile up and create compounding lag.
+        if (!this.isSending && this.videoElement.readyState >= 2) {
+          this.isSending = true;
+          this.hands.send({ image: this.videoElement });
         }
 
         this.animationId = requestAnimationFrame(processFrame);
