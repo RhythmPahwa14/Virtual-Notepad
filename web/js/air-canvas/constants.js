@@ -38,6 +38,7 @@ export const LANDMARKS = {
 export const GESTURE = {
   PINCH_THRESHOLD: 40,
   PALM_HOLD_TIME: 500,
+  DRAW_HOLD_TIME: 100,   // ms to hold index-point before stroke begins — prevents false starts
   FIST_HOLD_TIME: 1000,
   SWIPE_VELOCITY: 800,
   MIN_STROKE_LENGTH: 50,

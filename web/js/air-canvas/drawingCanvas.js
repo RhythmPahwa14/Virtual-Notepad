@@ -1,9 +1,9 @@
 import { STROKE, GESTURE } from './constants.js';
 
 // Exponential Moving Average alpha.
-// 0.5 = ~1 frame of smoothing lag at 30fps (~33ms) – snappy with natural jitter suppression.
+// 0.65 = ~0.54 frame lag at 30fps (~18ms) – responsive with natural jitter suppression.
 // Lower = smoother but laggier. Higher = faster but jittery.
-const EMA_ALPHA = 0.5;
+const EMA_ALPHA = 0.65;
 
 export class DrawingCanvas {
   constructor(canvas) {
