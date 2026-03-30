@@ -155,4 +155,5 @@ We welcome contributions to improve the Virtual Notepad experience:
 5. **Open a Pull Request**
 
 *Built with passion for computer vision and creating intuitive user experiences.*
+
 **Star this repository if you found it helpful and follow us for more innovative projects!**
