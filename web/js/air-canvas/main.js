@@ -444,7 +444,7 @@ class AirCanvas {
     const indexTip = this.gestureDetector.getIndexTip(landmarks);
 
     switch (state.current) {
-      case 'draw':  this.handleDraw(indexTip);     break;
+      case 'draw':  this.handleDraw(indexTip, state.duration);     break;
       case 'pinch': this.handlePinch(landmarks);   break;
       case 'palm':  this.handlePalm();             break;
       case 'swipe': this.handleSwipe(indexTip);    break;
@@ -465,19 +465,24 @@ class AirCanvas {
     }
   }
 
-  handleDraw(position) {
-    this.drawingCanvas.updateLivePosition(position);
-
+  handleDraw(position, duration) {
     const hitObject = this.objectManager.getObjectAtPosition(position.x, position.y);
     if (hitObject) {
+      this.drawingCanvas.updateLivePosition(position);
       this.objectManager.pokeObject(hitObject);
       return;
     }
 
     if (!this.isDrawing) {
-      this.isDrawing = true;
-      this.drawingCanvas.startStroke(position, this.currentColor);
+      // Show cursor while holding but don't draw yet (EMA applied once here)
+      this.drawingCanvas.updateLivePosition(position);
+      // Require DRAW_HOLD_TIME ms of stable index-point before stroke begins
+      if (duration >= GESTURE.DRAW_HOLD_TIME) {
+        this.isDrawing = true;
+        this.drawingCanvas.startStroke({ ...this.drawingCanvas.livePosition }, this.currentColor);
+      }
     } else {
+      // addPoint applies EMA and updates livePosition internally — no double-EMA
       this.drawingCanvas.addPoint(position);
     }
     // render() is intentionally NOT called here — the animate() rAF loop
