@@ -131,9 +131,6 @@ Found a bug? Have an idea?
 - Fork and submit a pull request
 - Share your own version built on this project
 
-## Credits
-
-Designed by Rhythm Pahwa
 
 ### Open Source Libraries
 
@@ -145,9 +142,7 @@ Designed by Rhythm Pahwa
 | [PeerJS](https://peerjs.com/) | WebRTC peer-to-peer connections | MIT |
 
 ## License
-
 MIT
-*Built with passion for computer vision and creating intuitive user experiences.*
 
 ## Contributing
 
@@ -159,6 +154,5 @@ We welcome contributions to improve the Virtual Notepad experience:
 4. **Push to branch**: `git push origin feature/amazing-feature`
 5. **Open a Pull Request**
 
----
-
+*Built with passion for computer vision and creating intuitive user experiences.*
 **Star this repository if you found it helpful and follow us for more innovative projects!**
