@@ -147,12 +147,6 @@ Designed by Rhythm Pahwa
 ## License
 
 MIT
-
-## Development Team
-
-- **Rhythm Pahwa** - Lead Developer | [LinkedIn](https://www.linkedin.com/in/pahwa-rhythm/)
-- **Chaitnya Dhar Dwivedi** - Co-Developer | [LinkedIn](https://www.linkedin.com/in/chaitnya-dhar-dwivedi-65333a255/)
-
 *Built with passion for computer vision and creating intuitive user experiences.*
 
 ## Contributing
